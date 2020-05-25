@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.leoyanblog.com","root":"/","scheme":"Muse","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="转载请注明出处：www.leoyanblog.com 本文出自 LeoYan 的博客 本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。  Activity的生命周期Activity的形态Active&#x2F;Running:&amp;#8195;&amp;#8195;Activity处于活动状态，此 Activity 位于屏幕前台并具有用户焦点。此时Activity处于栈顶，是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 之 Activity (二) 生命周期">
+<meta property="og:url" content="http://www.leoyanblog.com/post/2017/02/12.html">
+<meta property="og:site_name" content="LeoYan Blog">
+<meta property="og:description" content="转载请注明出处：www.leoyanblog.com 本文出自 LeoYan 的博客 本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。  Activity的生命周期Activity的形态Active&#x2F;Running:&amp;#8195;&amp;#8195;Activity处于活动状态，此 Activity 位于屏幕前台并具有用户焦点。此时Activity处于栈顶，是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://oddu03if7.bkt.clouddn.com/activity_lifecycle_.png">
+<meta property="og:image" content="http://oddu03if7.bkt.clouddn.com/restore_instance.png">
+<meta property="article:published_time" content="2017-02-12T02:00:00.000Z">
+<meta property="article:modified_time" content="2017-03-27T03:49:53.845Z">
+<meta property="article:author" content="Leo Yan">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="Activity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://oddu03if7.bkt.clouddn.com/activity_lifecycle_.png">
+
+<link rel="canonical" href="http://www.leoyanblog.com/post/2017/02/12.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Android 之 Activity (二) 生命周期 | LeoYan Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">LeoYan Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术分享，生活记录。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2017/02/12.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Leo Yan">
+      <meta itemprop="description" content="离经不叛道，特立不独行。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeoYan Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android 之 Activity (二) 生命周期
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-02-12 10:00:00" itemprop="dateCreated datePublished" datetime="2017-02-12T10:00:00+08:00">2017-02-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-03-27 11:49:53" itemprop="dateModified" datetime="2017-03-27T11:49:53+08:00">2017-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">四大组件</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6/Activity/" itemprop="url" rel="index"><span itemprop="name">Activity</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>转载请注明出处：<a href="http://www.leoyanblog.com">www.leoyanblog.com</a></p>
+<p>本文出自 LeoYan 的博客</p>
+<p>本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。</p>
+</blockquote>
+<h2 id="Activity的生命周期"><a href="#Activity的生命周期" class="headerlink" title="Activity的生命周期"></a>Activity的生命周期</h2><h3 id="Activity的形态"><a href="#Activity的形态" class="headerlink" title="Activity的形态"></a>Activity的形态</h3><h4 id="Active-Running"><a href="#Active-Running" class="headerlink" title="Active/Running:"></a>Active/Running:</h4><p>&#8195;&#8195;Activity处于活动状态，此 Activity 位于屏幕前台并具有用户焦点。此时Activity处于栈顶，是可见状态，可与用户进行交互。</p>
+<h4 id="Paused："><a href="#Paused：" class="headerlink" title="Paused："></a>Paused：</h4><p>&#8195;&#8195;另一个 Activity 位于屏幕前台并具有用户焦点，但此 Activity 仍可见。也就是说，当ActivityA失去焦点时，或被一个新的非全屏的ActivityB，或被一个透明的ActivityB放置在栈顶时，ActivityA就转化为Paused状态。但我们需要明白，此时ActivityA只是失去了与用户交互的能力，其所有的状态信息及其成员变量都还存在，只有在系统内存极度不足的情况下，可能会被系统终止。</p>
+<h4 id="Stopped："><a href="#Stopped：" class="headerlink" title="Stopped："></a>Stopped：</h4><p>&#8195;&#8195;当一个Activity被另一个Activity完全覆盖时，被覆盖的Activity就会进入Stopped状态，此时它不再可见，但是跟Paused状态一样保持着其所有状态信息及其成员变量。</p>
+<h4 id="Killed："><a href="#Killed：" class="headerlink" title="Killed："></a>Killed：</h4><p>&#8195;&#8195;当Activity被系统回收掉时，Activity就处于Killed状态。</p>
+<p>&#8195;&#8195;Activity会在以上四种形态中相互切换，至于如何切换，这因用户的操作不同而异。了解了Activity的4种形态后，我们就来聊聊Activity的生命周期。</p>
+<h3 id="Activity的生命周期-1"><a href="#Activity的生命周期-1" class="headerlink" title="Activity的生命周期"></a>Activity的生命周期</h3><h4 id="生命周期流程图"><a href="#生命周期流程图" class="headerlink" title="生命周期流程图"></a>生命周期流程图</h4><p><img src="http://oddu03if7.bkt.clouddn.com/activity_lifecycle_.png" alt="生命周期流程图"></p>
+<p>&#8195;&#8195;该生命周期图说明了这些循环以及 Activity 在状态转变期间可能经过的路径。矩形表示回调方法，当 Activity 在不同状态之间转变时，您可以实现这些方法来执行操作。</p>
+<p>&#8195;&#8195;相信大部分Android开发对这张流程图并不陌生，我们下面主要聊得话题就是围绕这张流程图了。我们先有个大概印象，后面我们分析完后再回来看，就相当清晰了。</p>
+<h4 id="实现生命周期回调"><a href="#实现生命周期回调" class="headerlink" title="实现生命周期回调"></a>实现生命周期回调</h4><p>&#8195;&#8195;所谓的生命周期就是在有用户参与的情况下，Activity经历从创建，运行，停止，销毁等正常的生命周期过程。我们这里先来介绍一下几个主要方法的调用时机，然后再通过代码层面来验证其调用流程。</p>
+<h5 id="onCreate"><a href="#onCreate" class="headerlink" title="onCreate :"></a>onCreate :</h5><p>&#8195;&#8195;该方法是在Activity被创建时回调，它是生命周期第一个调用的方法，我们在创建Activity时一般都需要重写该方法，然后在该方法中做一些初始化的操作，如通过setContentView设置界面布局的资源，初始化所需要的组件信息等。</p>
+<h5 id="onStart"><a href="#onStart" class="headerlink" title="onStart :"></a>onStart :</h5><p>&#8195;&#8195;此方法被回调时表示Activity正在启动，此时Activity已处于可见状态，只是还没有在前台显示，因此无法与用户进行交互。可以简单理解为Activity已显示而我们无法看见。</p>
+<h5 id="onResume"><a href="#onResume" class="headerlink" title="onResume :"></a>onResume :</h5><p>&#8195;&#8195;当此方法回调时，则说明Activity已在前台可见，可与用户交互了（处于前面所说的Active/Running形态），onResume方法与onStart的相同点是两者都表示Activity可见，只不过onStart回调时Activity还是后台无法与用户交互，而onResume则已显示在前台，可与用户交互。当然从流程图，我们也可以看出当Activity停止后（onPause方法和onStop方法被调用），重新回到前台时也会调用onResume方法，因此我们也可以在onResume方法中初始化一些资源，比如重新初始化在onPause或者onStop方法中释放的资源。</p>
+<h5 id="onPause"><a href="#onPause" class="headerlink" title="onPause :"></a>onPause :</h5><p>&#8195;&#8195;此方法被回调时则表示Activity正在停止（Paused形态），一般情况下onStop方法会紧接着被回调。但通过流程图我们还可以看到一种情况是onPause方法执行后直接执行了onResume方法，这属于比较极端的现象了，这可能是用户操作使当前Activity退居后台后又迅速地再回到到当前的Activity，此时onResume方法就会被回调。当然，在onPause方法中我们可以做一些数据存储或者动画停止或者资源回收的操作，但是不能太耗时，因为这可能会影响到新的Activity的显示——onPause方法执行完成后，新Activity的onResume方法才会被执行。</p>
+<h5 id="onStop"><a href="#onStop" class="headerlink" title="onStop :"></a>onStop :</h5><p>&#8195;&#8195;一般在onPause方法执行完成直接执行，表示Activity即将停止或者完全被覆盖（Stopped形态），此时Activity不可见，仅在后台运行。同样地，在onStop方法可以做一些资源释放的操作（不能太耗时）。</p>
+<h5 id="onRestart"><a href="#onRestart" class="headerlink" title="onRestart :"></a>onRestart :</h5><p>&#8195;&#8195;表示Activity正在重新启动，当Activity由不可见变为可见状态时，该方法被回调。这种情况一般是用户打开了一个新的Activity时，当前的Activity就会被暂停（onPause和onStop被执行了），接着又回到当前Activity页面时，onRestart方法就会被回调。</p>
+<h5 id="onDestroy"><a href="#onDestroy" class="headerlink" title="onDestroy :"></a>onDestroy :</h5><p>&#8195;&#8195;此时Activity正在被销毁，也是生命周期最后一个执行的方法，一般我们可以在此方法中做一些回收工作和最终的资源释放。<br>下面我们通过程序来验证上面流程中的几种比较重要的情况，同时观察生命周期方法的回调时机。</p>
+<h5 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h5><p>&#8195;&#8195;当一个 Activity 转入和转出上述不同状态时，系统会通过各种回调方法向其发出通知。 所有回调方法都是挂钩，您可以在 Activity 状态发生变化时替代这些挂钩来执行相应操作。 以下示例 Activity 包括每一个基本生命周期方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        <span class="comment">// The activity is being created.</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onStart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onStart();</span><br><span class="line">        <span class="comment">// The activity is about to become visible.</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onResume</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onResume();</span><br><span class="line">        <span class="comment">// The activity has become visible (it is now "resumed").</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onPause</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onPause();</span><br><span class="line">        <span class="comment">// Another activity is taking focus (this activity is about to be "paused").</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onStop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onStop();</span><br><span class="line">        <span class="comment">// The activity is no longer visible (it is now "stopped")</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDestroy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onDestroy();</span><br><span class="line">        <span class="comment">// The activity is about to be destroyed.</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注：正如以上示例所示，您在实现这些生命周期方法时必须始终先调用超类实现，然后再执行任何操作。</p>
+</blockquote>
+<h4 id="生命周期的流程"><a href="#生命周期的流程" class="headerlink" title="生命周期的流程"></a>生命周期的流程</h4><p>&#8195;&#8195;这些方法共同定义 Activity 的整个生命周期。您可以通过实现这些方法监控 Activity 生命周期中的三个嵌套循环：</p>
+<ul>
+<li>Activity 的整个生命周期</li>
+</ul>
+<p>&#8195;&#8195;发生在 onCreate() 调用与 onDestroy() 调用之间。您的 Activity 应在 onCreate() 中执行“全局”状态设置（例如定义布局），并在 onDestroy() 中释放所有无用的资源。例如，如果您的 Activity 有一个在后台运行的线程，用于从网络上下载数据，它可能会在 onCreate() 中创建该线程，然后在 onDestroy() 中停止该线程。</p>
+<ul>
+<li>Activity 的可见生命周期</li>
+</ul>
+<p>&#8195;&#8195;发生在 onStart() 调用与 onStop() 调用之间。在这段时间，用户可以在屏幕上看到 Activity 并与其交互。 例如，当一个新 Activity 启动，并且此 Activity 不再可见时，系统会调用 onStop()。您可以在调用这两个方法之间保留向用户显示 Activity 所需的资源。 例如，您可以在 onStart() 中注册一个 BroadcastReceiver 以监控影响 UI 的变化，并在用户无法再看到您显示的内容时在 onStop() 中将其取消注册。在 Activity 的整个生命周期，当 Activity 在对用户可见和隐藏两种状态中交替变化时，系统可能会多次调用 onStart() 和 onStop()。</p>
+<ul>
+<li>Activity 的前台生命周期</li>
+</ul>
+<p>&#8195;&#8195;发生在 onResume() 调用与 onPause() 调用之间。在这段时间，Activity 位于屏幕上的所有其他 Activity 之前，并具有用户输入焦点。 Activity 可频繁转入和转出前台。例如，当设备转入休眠状态或出现对话框时，系统会调用 onPause()。 由于此状态可能经常发生转变，因此这两个方法中应采用适度轻量级的代码，以避免因转变速度慢而让用户等待。</p>
+<h3 id="保存-Activity-状态"><a href="#保存-Activity-状态" class="headerlink" title="保存 Activity 状态"></a>保存 Activity 状态</h3><p>&#8195;&#8195;当 Activity 暂停或停止时，Activity 对象仍保留在内存中，即有关其成员和当前状态的所有信息仍处于活动状态。 因此，用户在 Activity 内所做的任何更改都会得到保留，这样一来，当 Activity 返回前台（当它“继续”）时，这些更改仍然存在。</p>
+<p>&#8195;&#8195;不过，当系统为了恢复内存而销毁某项 Activity 时，Activity 对象也会被销毁，因此系统在继续 Activity 时根本无法让其状态保持完好，而是必须在用户返回 Activity 时重建 Activity 对象。但用户并不知道系统销毁 Activity 后又对其进行了重建，因此他们很可能认为 Activity 状态毫无变化。 在这种情况下，您可以实现另一个回调方法onSaveInstanceState()，对有关 Activity 状态的信息进行保存，以确保有关 Activity 状态的重要信息得到保留。</p>
+<p>&#8195;&#8195;系统会先调用 onSaveInstanceState()，然后再使 Activity 销毁。系统会向该方法传递一个 Bundle，您可以在其中使用 putString() 和 putInt() 等方法以名称和值对应形式保存有关 Activity 状态的信息。然后，如果系统终止您的应用进程，并且用户返回您的 Activity，则系统会重建该 Activity，并将 Bundle 同时传递给 onCreate() 和 onRestoreInstanceState()。您可以使用上述任一方法从 Bundle 提取您保存的状态并恢复该 Activity 状态。如果没有状态信息需要恢复，则传递给您的 Bundle 是空值（如果是首次创建该 Activity，就会出现这种情况）。</p>
+<p>&#8195;&#8195;下图(Activity 状态保存周期图)在两种情况下，Activity 重获用户焦点时可保持状态完好：系统在销毁 Activity 后重建 Activity，Activity 必须恢复之前保存的状态；系统停止 Activity 后继续执行 Activity，并且 Activity 状态保持完好。</p>
+<p><img src="http://oddu03if7.bkt.clouddn.com/restore_instance.png" alt="Activity 状态保存周期图"></p>
+<blockquote>
+<p>注：无法保证系统会在销毁您的 Activity 前调用 onSaveInstanceState()，因为存在不需要保存状态的情况（例如用户使用“返回”按钮离开您的 Activity 时，因为用户的行为是在显式关闭 Activity）。 如果系统调用 onSaveInstanceState()，它会在调用 onStop() 之前，并且可能会在调用 onPause() 之前进行调用。</p>
+</blockquote>
+<p>&#8195;&#8195;不过，即使您什么都不做，也不实现 onSaveInstanceState()，Activity 类的 onSaveInstanceState() 默认实现也会恢复部分 Activity 状态。具体地讲，默认实现会为布局中的每个 View 调用相应的 onSaveInstanceState() 方法，让每个视图都能提供有关自身的应保存信息。Android 框架中几乎每个 View 都会根据需要实现此方法，以便在重建 Activity 时自动保存和恢复对 UI 所做的任何可见更改。例如，EditText 保存用户输入的任何文本，CheckBox 保存复选框的选中或未选中状态。您只需为想要保存其状态的每个 View 提供一个唯一的 ID（通过 android:id 属性）。如果 View 没有 ID，则系统无法保存其状态。</p>
+<blockquote>
+<p>您还可以通过将 android: saveEnabled 属性设置为 “false” 或通过调用 setSaveEnabled() 方法显式阻止布局内的视图保存其状态。您通常不应将该属性停用，但如果您想以不同方式恢复 Activity UI 的状态，就可能需要这样做。</p>
+</blockquote>
+<p>&#8195;&#8195;由于 onSaveInstanceState() 的默认实现有助于保存 UI 的状态，因此如果您为了保存更多状态信息而替换该方法，应始终先调用 onSaveInstanceState() 的超类实现，然后再执行任何操作。 同样，如果您替换 onRestoreInstanceState() 方法，也应调用它的父类实现，以便默认实现能够恢复视图状态。</p>
+<blockquote>
+<p>注：由于无法保证系统会调用 onSaveInstanceState()，因此您只应利用它来记录 Activity 的瞬态（UI 的状态），切勿使用它来存储持久性数据，而应使用 onPause() 在用户离开 Activity 后存储持久性数据（例如应保存到数据库的数据）。</p>
+</blockquote>
+<p>&#8195;&#8195;您只需旋转设备，让屏幕方向发生变化，就能有效地测试您的应用的状态恢复能力。 当屏幕方向变化时，系统会销毁并重建 Activity，以便应用可供新屏幕配置使用的备用资源。 单凭这一理由，您的 Activity 在重建时能否完全恢复其状态就显得非常重要，因为用户在使用应用时经常需要旋转屏幕。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><h4 id="Activity正常的生命周期"><a href="#Activity正常的生命周期" class="headerlink" title="Activity正常的生命周期"></a>Activity正常的生命周期</h4><p>onCreate()→onStart()→onResume()→onPause()→onStop()→onDestroy()</p>
+<h4 id="Activity横竖屏切换的生命周期-带保存状态"><a href="#Activity横竖屏切换的生命周期-带保存状态" class="headerlink" title="Activity横竖屏切换的生命周期(带保存状态)"></a>Activity横竖屏切换的生命周期(带保存状态)</h4><p>onSaveInstanceState()→onPause()→onStop()→onDestroy()→onCreate()→onStart()→onRestoreInstanceState()→onResume()</p>
+<p>&#8195;&#8195;横竖屏切换生命周期详解：比如我们在看视频，现在要从竖屏切换到横屏的时候，要先保存我们现在的状态（如：你看视频看到5分钟，要保存当前看了几分钟、当前缓存的进度等），也就是onSaveInstanceState；接着竖屏的Activity要失去焦点onPause；然后让它停止运行onStop；再销毁它onDestroy；接着再创建横屏的Activity  onCreate；再让它运行onStart；然后要将之前保存了的状态取出来，onRestoreInstanceState；最后让横屏的Activity获得焦点onResume。</p>
+<h4 id="Activity跳转的生命周期有两种情况："><a href="#Activity跳转的生命周期有两种情况：" class="headerlink" title="Activity跳转的生命周期有两种情况："></a>Activity跳转的生命周期有两种情况：</h4><p>从 A  跳转到 B</p>
+<ul>
+<li>1、这种情况是：A 完全不可见</li>
+</ul>
+<p>&#8195;&#8195;A—–onPause</p>
+<p>&#8195;&#8195;B——————onCreate</p>
+<p>&#8195;&#8195;B——————onStart</p>
+<p>&#8195;&#8195;B——————onResume</p>
+<p>&#8195;&#8195;A—–onStop</p>
+<ul>
+<li>2、这种情况是：B是透明的</li>
+</ul>
+<p>&#8195;&#8195;A—–onPause</p>
+<p>&#8195;&#8195;B——————onCreate</p>
+<p>&#8195;&#8195;B——————onStart</p>
+<p>&#8195;&#8195;B——————onResume</p>
+<blockquote>
+<p>因为B是透明的，我们还能看见A，所以不执行 A—–onStop。这两种情况的返回都是一样的：</p>
+</blockquote>
+<p>按 back 键，从B返回A：</p>
+<p>&#8195;&#8195;B——————onPause</p>
+<p>&#8195;&#8195;A—–onRestart</p>
+<p>&#8195;&#8195;A—–onStart</p>
+<p>&#8195;&#8195;A—–onResume</p>
+<p>&#8195;&#8195;B——————onStop</p>
+<p>&#8195;&#8195;B——————onDestroy</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android/" rel="tag"># Android</a>
+              <a href="/tags/Activity/" rel="tag"># Activity</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/post/2017/02/05.html" rel="prev" title="Android 之 Activity (一) 基础知识">
+      <i class="fa fa-chevron-left"></i> Android 之 Activity (一) 基础知识
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/post/2017/02/19.html" rel="next" title="Android 之 Activity (三) Task 和 LaunchMode">
+      Android 之 Activity (三) Task 和 LaunchMode <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Activity的生命周期"><span class="nav-number">1.</span> <span class="nav-text">Activity的生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Activity的形态"><span class="nav-number">1.1.</span> <span class="nav-text">Activity的形态</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Active-Running"><span class="nav-number">1.1.1.</span> <span class="nav-text">Active&#x2F;Running:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Paused："><span class="nav-number">1.1.2.</span> <span class="nav-text">Paused：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Stopped："><span class="nav-number">1.1.3.</span> <span class="nav-text">Stopped：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Killed："><span class="nav-number">1.1.4.</span> <span class="nav-text">Killed：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Activity的生命周期-1"><span class="nav-number">1.2.</span> <span class="nav-text">Activity的生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#生命周期流程图"><span class="nav-number">1.2.1.</span> <span class="nav-text">生命周期流程图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现生命周期回调"><span class="nav-number">1.2.2.</span> <span class="nav-text">实现生命周期回调</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#onCreate"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">onCreate :</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#onStart"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">onStart :</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#onResume"><span class="nav-number">1.2.2.3.</span> <span class="nav-text">onResume :</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#onPause"><span class="nav-number">1.2.2.4.</span> <span class="nav-text">onPause :</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#onStop"><span class="nav-number">1.2.2.5.</span> <span class="nav-text">onStop :</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#onRestart"><span class="nav-number">1.2.2.6.</span> <span class="nav-text">onRestart :</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#onDestroy"><span class="nav-number">1.2.2.7.</span> <span class="nav-text">onDestroy :</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#示例"><span class="nav-number">1.2.2.8.</span> <span class="nav-text">示例</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生命周期的流程"><span class="nav-number">1.2.3.</span> <span class="nav-text">生命周期的流程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#保存-Activity-状态"><span class="nav-number">1.3.</span> <span class="nav-text">保存 Activity 状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">1.4.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Activity正常的生命周期"><span class="nav-number">1.4.1.</span> <span class="nav-text">Activity正常的生命周期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Activity横竖屏切换的生命周期-带保存状态"><span class="nav-number">1.4.2.</span> <span class="nav-text">Activity横竖屏切换的生命周期(带保存状态)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Activity跳转的生命周期有两种情况："><span class="nav-number">1.4.3.</span> <span class="nav-text">Activity跳转的生命周期有两种情况：</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Leo Yan</p>
+  <div class="site-description" itemprop="description">离经不叛道，特立不独行。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo Yan</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

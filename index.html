@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hans">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
@@ -26,6 +26,7 @@
 <meta property="og:url" content="http://www.leoyanblog.com/index.html">
 <meta property="og:site_name" content="LeoYan Blog">
 <meta property="og:description" content="离经不叛道，特立不独行。">
+<meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="Leo Yan">
 <meta name="twitter:card" content="summary">
 
@@ -38,7 +39,7 @@
     sidebar: "",
     isHome : true,
     isPost : false,
-    lang   : 'zh-Hans'
+    lang   : 'zh-CN'
   };
 </script>
 
@@ -82,7 +83,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="تشغيل شريط التصفح">
+    <div class="toggle" aria-label="切换导航栏">
     </div>
   </div>
 
@@ -128,8 +129,8 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2020/05/18.html">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2017/05/21.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -143,7 +144,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/post/2020/05/18.html" class="post-title-link" itemprop="url">Hello World</a>
+            <a href="/post/2017/05/21.html" class="post-title-link" itemprop="url">Android 清单文件之 Application 标签详解</a>
         </h2>
 
         <div class="post-meta">
@@ -151,9 +152,29 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">نُشر في</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="أُنشأ: 2020-05-18 17:54:58" itemprop="dateCreated datePublished" datetime="2020-05-18T17:54:58+08:00">2020-05-18</time>
+              <time title="创建时间：2017-05-21 10:00:00" itemprop="dateCreated datePublished" datetime="2017-05-21T10:00:00+08:00">2017-05-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-07-04 17:14:17" itemprop="dateModified" datetime="2017-07-04T17:14:17+08:00">2017-07-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E6%B8%85%E5%8D%95%E6%96%87%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">清单文件</span></a>
+                </span>
             </span>
 
           
@@ -167,19 +188,1545 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+          <blockquote>
+<p>转载请注明出处：<a href="http://www.leoyanblog.com">www.leoyanblog.com</a></p>
+<p>本文出自 LeoYan 的博客</p>
+<p>本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。</p>
+</blockquote>
+<h2 id="Application-属性"><a href="#Application-属性" class="headerlink" title="Application:属性"></a>Application:属性</h2><p>一个AndroidManifest.xml中必须含有一个Application标签，这个标签声明了每一个应用程序的组件及其属性(如icon,label,permission等)</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;application</span><br><span class="line">    android:<span class="attr">allowClearUserData</span> =   [<span class="string">"true"</span> | <span class="string">"false"</span>]</span><br><span class="line">    android:<span class="attr">allowTaskReparenting</span> = [<span class="string">"true"</span> | <span class="string">"false"</span>]</span><br><span class="line">    android:<span class="attr">backupAgent</span> = <span class="string">"string"</span></span><br><span class="line">    android:<span class="attr">debuggable</span> =           [<span class="string">"true"</span> | <span class="string">"false"</span>]</span><br><span class="line">    android:<span class="attr">description</span> = <span class="string">"string resource"</span></span><br><span class="line">    android:<span class="attr">enabled</span> =              [<span class="string">"true"</span> | <span class="string">"false"</span>]</span><br><span class="line">    android:<span class="attr">hasCode</span> =              [<span class="string">"true"</span> | <span class="string">"false"</span>]</span><br><span class="line">    android:<span class="attr">icon</span> = <span class="string">"drawable resource"</span></span><br><span class="line">    android:<span class="attr">killAfterRestore</span> =     [<span class="string">"true"</span> | <span class="string">"false"</span>]</span><br><span class="line">    android:<span class="attr">label</span> = <span class="string">"string resource"</span></span><br><span class="line">    android:<span class="attr">manageSpaceActivity</span> = <span class="string">"string"</span></span><br><span class="line">    android:<span class="attr">name</span> = <span class="string">"string"</span></span><br><span class="line">    android:<span class="attr">permission</span> = <span class="string">"string"</span></span><br><span class="line">    android:<span class="attr">persistent</span> =           [<span class="string">"true"</span> | <span class="string">"false"</span>]</span><br><span class="line">    android:<span class="attr">process</span> = <span class="string">"string"</span></span><br><span class="line">    android:<span class="attr">restoreAnyVersion</span> =    [<span class="string">"true"</span> | <span class="string">"false"</span>]</span><br><span class="line">    android:<span class="attr">taskAffinity</span> = <span class="string">"string"</span></span><br><span class="line">    android:<span class="attr">theme</span> = <span class="string">"resource or theme"</span> &gt;</span><br><span class="line">&lt;/application&gt;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<h3 id="A、allowClearUserData"><a href="#A、allowClearUserData" class="headerlink" title="A、allowClearUserData"></a>A、allowClearUserData</h3><p>android:allowClearUserData (‘true’ or ‘false’)</p>
+<p>用户是否能选择自行清除数据，默认为true，程序管理器包含一个选择允许用户清除数据。当为true时，用户可自己清理用户数据，反之亦然</p>
+<h3 id="B、allowTaskReparenting"><a href="#B、allowTaskReparenting" class="headerlink" title="B、allowTaskReparenting"></a>B、allowTaskReparenting</h3><p>android:allowTaskReparenting (‘true’ or ‘false’)</p>
+<p>是否允许activity更换从属的任务，比如从短信息任务切换到浏览器任务</p>
+<h3 id="C、backupAgent"><a href="#C、backupAgent" class="headerlink" title="C、backupAgent"></a>C、backupAgent</h3><p>android:backupAgent (string)</p>
+<p>这也是Android2.2中的一个新特性，设置该APP的备份，属性值应该是一个完整的类名，如com.project.TestCase，此属性并没有默认值，并且类名必须得指定(就是个备份工具，将数据备份到云端的操作)</p>
+<h3 id="D、debuggable"><a href="#D、debuggable" class="headerlink" title="D、debuggable"></a>D、debuggable</h3><p>android:debuggable (‘true’ or ‘false’)</p>
+<p>这个从字面上就可以看出是什么作用的，当设置为true时，表明该APP在手机上可以被调试。默认为false,在false的情况下调试该APP，就会报以下错误：</p>
+<p>Device XXX requires that applications explicitely declare themselves as debuggable in their manifest.</p>
+<p>Application XXX does not have the attribute ‘debuggable’ set to TRUE in its manifest and cannot be debugged.</p>
+<h3 id="E、label-description"><a href="#E、label-description" class="headerlink" title="E、label / description"></a>E、label / description</h3><p>android:label (string)</p>
+<p>android:description (string)</p>
+<p>此两个属性都是为许可提供的，均为字符串资源，当用户去看许可列表(android:label)或者某个许可的详细信息(android:description)时，这些字符串资源就可以显示给用户。label应当尽量简短，之需要告知用户该许可是在保护什么功能就行。而description可以用于具体描述获取该许可的程序可以做哪些事情，实际上让用户可以知道如果他们同意程序获取该权限的话，该程序可以做什么。我们通常用两句话来描述许可，第一句描述该许可，第二句警告用户如果批准该权限会可能有什么不好的事情发生</p>
+<h3 id="F、enabled"><a href="#F、enabled" class="headerlink" title="F、enabled"></a>F、enabled</h3><p>android:enabled (‘true’ or ‘false’)</p>
+<p>Android系统是否能够实例化该应用程序的组件，如果为true，每个组件的enabled属性决定那个组件是否可以被 enabled。如果为false，它覆盖组件指定的值；所有组件都是disabled。</p>
+<h3 id="G、hasCode"><a href="#G、hasCode" class="headerlink" title="G、hasCode"></a>G、hasCode</h3><p>android:hasCode (‘true’ or ‘false’)</p>
+<p>表示此APP是否包含任何的代码，默认为true，若为false，则系统在运行组件时，不会去尝试加载任何的APP代码</p>
+<p>一个应用程序自身不会含有任何的代码，除非内置组件类，比如Activity类，此类使用了AliasActivity类，当然这是个罕见的现象</p>
+<p>(在Android2.3可以用标准C来开发应用程序，可在androidManifest.xml中将此属性设置为false,因为这个APP本身已经不含有任何的JAVA代码了)</p>
+<h3 id="H、icon"><a href="#H、icon" class="headerlink" title="H、icon"></a>H、icon</h3><p>android:icon (drawable resource)</p>
+<p>这个很简单，就是声明整个APP的图标，图片一般都放在drawable文件夹下</p>
+<h3 id="I、killAfterRestore"><a href="#I、killAfterRestore" class="headerlink" title="I、killAfterRestore"></a>I、killAfterRestore</h3><p>android:killAfterRestore (‘true’ or ‘false’)</p>
+<h3 id="J、manageSpaceActivity"><a href="#J、manageSpaceActivity" class="headerlink" title="J、manageSpaceActivity"></a>J、manageSpaceActivity</h3><p>android:manageSpaceActivity (string)</p>
+<h3 id="K、name"><a href="#K、name" class="headerlink" title="K、name"></a>K、name</h3><p>android:name (string)</p>
+<p>为应用程序所实现的Application子类的全名。当应用程序进程开始时，该类在所有应用程序组件之前被实例化。</p>
+<p>若该类(比方androidMain类)是在声明的package下，则可以直接声明android:name=”androidMain”,但此类是在package下面的子包的话，就必须声明为全路径或android:name=”package名称.子包名成.androidMain”</p>
+<h3 id="L、permission"><a href="#L、permission" class="headerlink" title="L、permission"></a>L、permission</h3><p>android:permission (string)</p>
+<p>设置许可名，这个属性若在上定义的话，是一个给应用程序的所有组件设置许可的便捷方式，当然它是被各组件设置的许可名所覆盖的</p>
+<h3 id="M、presistent"><a href="#M、presistent" class="headerlink" title="M、presistent"></a>M、presistent</h3><p>android:presistent (‘true’ or ‘false’)</p>
+<p>该应用程序是否应该在任何时候都保持运行状态,默认为false。因为应用程序通常不应该设置本标识，持续模式仅仅应该设置给某些系统应用程序才是有意义的。</p>
+<h3 id="N、process"><a href="#N、process" class="headerlink" title="N、process"></a>N、process</h3><p>android:process (string)</p>
+<p>应用程序运行的进程名，它的默认值为元素里设置的包名，当然每个组件都可以通过设置该属性来覆盖默认值。如果你想两个应用程序共用一个进程的话，你可以设置他们的android:process相同，但前提条件是他们共享一个用户ID及被赋予了相同证书的时候</p>
+<h3 id="O、restoreAnyVersion"><a href="#O、restoreAnyVersion" class="headerlink" title="O、restoreAnyVersion"></a>O、restoreAnyVersion</h3><p>android:restoreAnyVersion (‘true’ or ‘false’)</p>
+<p>同样也是android2.2的一个新特性，用来表明应用是否准备尝试恢复所有的备份，甚至该备份是比当前设备上更要新的版本，默认是false</p>
+<h3 id="P、taskAffinity"><a href="#P、taskAffinity" class="headerlink" title="P、taskAffinity"></a>P、taskAffinity</h3><p>android:taskAffinity (string)</p>
+<p>拥有相同的affinity的Activity理论上属于相同的Task，应用程序默认的affinity的名字是元素中设定的package名</p>
+<h3 id="Q、theme"><a href="#Q、theme" class="headerlink" title="Q、theme"></a>Q、theme</h3><p>android:theme (resource or theme)</p>
+<p>是一个资源的风格，它定义了一个默认的主题风格给所有的activity,当然也可以在自己的theme里面去设置它，有点类似style。</p>
 
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+      
+    </div>
 
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
 
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2017/05/14.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Leo Yan">
+      <meta itemprop="description" content="离经不叛道，特立不独行。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeoYan Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/post/2017/05/14.html" class="post-title-link" itemprop="url">WannaCry 勒索病毒新变种的防护</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-05-14 10:00:00" itemprop="dateCreated datePublished" datetime="2017-05-14T10:00:00+08:00">2017-05-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-05-15 22:31:50" itemprop="dateModified" datetime="2017-05-15T22:31:50+08:00">2017-05-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BA%92%E8%81%94%E7%BD%91/" itemprop="url" rel="index"><span itemprop="name">互联网</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BA%92%E8%81%94%E7%BD%91/%E6%96%B0%E9%97%BB/" itemprop="url" rel="index"><span itemprop="name">新闻</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>转载请注明出处：<a href="http://www.leoyanblog.com">www.leoyanblog.com</a></p>
+<p>本文出自 LeoYan 的博客</p>
+<p>本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。</p>
+</blockquote>
+<p><img src="http://oddu03if7.bkt.clouddn.com/LSBD0.jpg" alt="LSBD0"></p>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>近期全球范围内爆发基于Windows网络共享协议进行攻击传播的蠕虫恶意代码，目前已有国内外多个高校校内网、大型企业内网和政府机构专网被感染，系统一旦被感染，Office、PDF等重要文件将被加密，需要向黑客支付高额赎金才能解密恢复文件，对重要数据造成严重损失。此次勒索病毒可远程攻击Windows的文件共享端口，如果系统未及时更新补丁或关闭端口，无需用户任何操作，只要开机联网，攻击者就能在电脑里执行任意代码，植入勒索病毒等恶意程序。</p>
+<p><strong>下午，国家网络与信息安全信息通报中心发出就勒索病毒发布紧急通报：</strong> 监测发现，在全球范围内爆发的WannaCry勒索病毒出现了变种：WannaCry2.0，与之前版本的不同是，这个变种取消了Kill Switch，不能通过注册某个域名来关闭变种勒索病毒的传播，该变种传播速度可能会更快。请广大网民尽快升级安装Windows操作系统相关补丁，已感染病毒机器请立即断网，避免进一步传播感染。</p>
+<p>几乎与此同时，北京市委网信办、北京市公安局、北京市经信委联合发出《关于WannaCry勒索蠕虫出现变种及处置工作建议的通知》。《通知》同样指出，WannaCry 勒索蠕虫已经出现新变种，并给出了具体处理建议。</p>
+<p><strong>几个小时前，英国BBC发文称：安全专家警告，下一波网络攻击即将来临，很可能在星期一。</strong></p>
+<p>附：《通知》全文</p>
+<p><img src="http://oddu03if7.bkt.clouddn.com/LSBD5.png" alt="LSBD5"></p>
+<hr>
+<h3 id="什么是WannaCry？"><a href="#什么是WannaCry？" class="headerlink" title="什么是WannaCry？"></a>什么是WannaCry？</h3><p>就是一些混蛋编写的利用Windows中的SMB漏洞的病毒代码，也被称为Wana Decrypt0r，WannaCryptor或WCRY，和其它勒索病毒变体一样，阻止你访问计算机或文件，并要求支付赎金解锁文件。</p>
+<h3 id="如何防护？"><a href="#如何防护？" class="headerlink" title="如何防护？"></a>如何防护？</h3><h4 id="第一步："><a href="#第一步：" class="headerlink" title="第一步："></a>第一步：</h4><p>什么都不用说，先断网，再备份！</p>
+<p>拔掉网线，关掉WiFi，然后开机备份文档。</p>
+<p>注意注意！不要备份在本机和网络硬盘上。</p>
+<h4 id="第二步："><a href="#第二步：" class="headerlink" title="第二步："></a>第二步：</h4><p>开机。</p>
+<h4 id="第三步："><a href="#第三步：" class="headerlink" title="第三步："></a>第三步：</h4><p>紧急备份：您看到预警通知后，建议您即刻断开办公终端的网络连接，通过移动存储设备（U盘、移动硬盘等）对重要办公文件进行备份，这样即使计算机遭遇了勒索软件攻击，您也能够恢复所有文件。</p>
+<h4 id="第四步："><a href="#第四步：" class="headerlink" title="第四步："></a>第四步：</h4><p>控制面板 –&gt; 防火墙高级设置 –&gt; 在入站规则(新建规则) –&gt; 端口 –&gt; TCP打勾 –&gt; 特定输入(445) –&gt; 阻止连接 –&gt; 名字輸入(阻挡勒索病毒连接名)</p>
+<p>具体如下：</p>
+<ol>
+<li><p>打开控制面板-系统和安全-Windows 防火墙</p>
+</li>
+<li><p>点击高级设置（打开高级安全Windows防火墙）</p>
+</li>
+<li><p>在入站规则（也就是外网访问你的电脑的规则）图标上右键-新建规则</p>
+</li>
+</ol>
+<p><img src="http://oddu03if7.bkt.clouddn.com/LSBD1.jpg" alt="LSBD1"></p>
+<ol start="4">
+<li>点击端口，然后点击下一步</li>
+</ol>
+<p><img src="http://oddu03if7.bkt.clouddn.com/LSBD2.jpg" alt="LSBD2"></p>
+<ol start="5">
+<li>点击TCP， 然后在“特定本地端口”里输入445</li>
+</ol>
+<p><img src="http://oddu03if7.bkt.clouddn.com/LSBD3.jpg" alt="LSBD3"></p>
+<ol start="6">
+<li><p>点击下一步</p>
+</li>
+<li><p>点击阻止连接</p>
+</li>
+</ol>
+<p><img src="http://oddu03if7.bkt.clouddn.com/LSBD4.jpg" alt="LSBD4"></p>
+<ol start="8">
+<li><p>点击下一步</p>
+</li>
+<li><p>全选上，然后下一步。</p>
+</li>
+<li><p>随便起名字，然后完成。</p>
+</li>
+</ol>
+<p>到这里，你完成了阻止所有通过445端口连接你的电脑的连接。</p>
+<p>不放心的可以再把UTP也阻止了(方法一样）。</p>
+<p>445端口关闭后，本机cmd窗口执行命令netstat -ano | findstr :445，回车后无任何返回。</p>
+<p>这样确保了你上网时不被病毒攻击</p>
+<h4 id="第五步："><a href="#第五步：" class="headerlink" title="第五步："></a>第五步：</h4><p>连接网络，打补丁</p>
+<p>补丁升级地址：</p>
+<p>更新最新的5月份KB4012264补丁，如果你的更新记录如下，则表示已更新</p>
+<blockquote>
+<p>Windows 7 : KB4012215 或 KB4015549 或 KB4019264</p>
+</blockquote>
+<blockquote>
+<p>Windows 8.1:KB4012216 或 KB4015550 或 KB4019215</p>
+</blockquote>
+<p>Windows 10</p>
+<p>直接去Windows更新便可</p>
+<p>Windows 8.1 64：</p>
+<p><a href="http://download.windowsupdate.com/c/msdownload/update/software/secu/2017/05/windows8.1-kb4019215-x64_d06fa047afc97c445c69181599e3a66568964b23.msu" target="_blank" rel="noopener">http://download.windowsupdate.com/c/msdownload/update/software/secu/2017/05/windows8.1-kb4019215-x64_d06fa047afc97c445c69181599e3a66568964b23.msu</a></p>
+<p>Windows 8.1 32：</p>
+<p><a href="http://download.windowsupdate.com/c/msdownload/update/software/secu/2017/05/windows8.1-kb4019215-x86_fe1cafb988ae5db6046d6e389345faf7bac587d7.msu" target="_blank" rel="noopener">http://download.windowsupdate.com/c/msdownload/update/software/secu/2017/05/windows8.1-kb4019215-x86_fe1cafb988ae5db6046d6e389345faf7bac587d7.msu</a></p>
+<p>Windows 7 64：</p>
+<p><a href="http://download.windowsupdate.com/c/msdownload/update/software/secu/2017/05/windows6.1-kb4019264-x64_c2d1cef74d6cb2278e3b2234c124b207d0d0540f.msu" target="_blank" rel="noopener">http://download.windowsupdate.com/c/msdownload/update/software/secu/2017/05/windows6.1-kb4019264-x64_c2d1cef74d6cb2278e3b2234c124b207d0d0540f.msu</a></p>
+<p>Windows 7 32：</p>
+<p><a href="http://download.windowsupdate.com/c/msdownload/update/software/secu/2017/05/windows6.1-kb4019264-x86_aaf785b1697982cfdbe4a39c1aabd727d510c6a7.msu" target="_blank" rel="noopener">http://download.windowsupdate.com/c/msdownload/update/software/secu/2017/05/windows6.1-kb4019264-x86_aaf785b1697982cfdbe4a39c1aabd727d510c6a7.msu</a></p>
+<p>针对老版本Windows，微软已推出KB4012598 :</p>
+<p>Windows Vista 32/64</p>
+<p>Windows Server 2008 32/64</p>
+<p>Windows 8 32/64</p>
+<p>Windows XP SP3</p>
+<p>Windows Server 2003</p>
+<p><a href="http://www.catalog.update.microsoft.com/Search.aspx?q=KB4012598" target="_blank" rel="noopener">http://www.catalog.update.microsoft.com/Search.aspx?q=KB4012598</a></p>
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>该病毒具有传染性，传播快，所以请大家务必对自己的电脑升级防护，避免二次传播。</p>
+<p>最后，如果你被感染，千万不要支付赎金，这助长这些混蛋的嚣张气焰，没准还会要你支付更多的赎金。</p>
+<p>如果发现被感染，赶快关机，交给专业人士处理。</p>
+<p>千万不要打开可疑的电子邮件，永远不要打开可疑的附件！</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2017/05/07.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Leo Yan">
+      <meta itemprop="description" content="离经不叛道，特立不独行。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeoYan Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/post/2017/05/07.html" class="post-title-link" itemprop="url">Android 如何用 sharedUserId 做数据共享</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-05-07 10:00:00" itemprop="dateCreated datePublished" datetime="2017-05-07T10:00:00+08:00">2017-05-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-07-04 15:04:55" itemprop="dateModified" datetime="2017-07-04T15:04:55+08:00">2017-07-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E6%95%B0%E6%8D%AE%E5%85%B1%E4%BA%AB/" itemprop="url" rel="index"><span itemprop="name">数据共享</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>转载请注明出处：<a href="http://www.leoyanblog.com">www.leoyanblog.com</a></p>
+<p>本文出自 LeoYan 的博客</p>
+<p>本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。</p>
+</blockquote>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>当 APK 安装的时候，userId 这个标志就会产生。APK 在设备上的整个生命周期中，这个 ID 不再改变。同一个应用包在不同设备上可能有不同的 userId，重要的是在给定的设备上，每个应用包有自己独立的 userId。</p>
+<h3 id="userId的特点"><a href="#userId的特点" class="headerlink" title="userId的特点"></a>userId的特点</h3><ol>
+<li><p>作为 APK 身份的标识</p>
+</li>
+<li><p>userId 对应一个 Linux 用户，所以不同 APK (用户)间互相访问数据默认是禁止的。</p>
+</li>
+</ol>
+<p>那么不同 APK 之间想要互相访问数据应该怎么办呢？</p>
+<h3 id="数据共享"><a href="#数据共享" class="headerlink" title="数据共享"></a>数据共享</h3><p>Android 为我们提供了两种数据互访的方法：</p>
+<ol>
+<li>使用 Share Preference / Content Provider</li>
+</ol>
+<p>APK通过指定接口和数据供其它APK读取，开发者需要实现接口和指定 share 的数据。</p>
+<ol start="2">
+<li>在配置文件 manifest 中配置相同的 UserId</li>
+</ol>
+<p>通过共享 userId，拥有相同 userId 的用户可以配置成运行在同一进程当中，因此默认就是可以互相访问任意数据的。</p>
+<p>也可以配置为不同进程当中，彼此之间就像访问自己的数据一样访问彼此的数据库和文件。</p>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>应用1：com.leoyanblog.sqlite</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;manifestxmlns:<span class="attribute">android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attribute">package</span>=<span class="string">"com.leoyanblog.sqlite"</span></span><br><span class="line">    android:<span class="attribute">versionCode</span>=<span class="string">"1"</span></span><br><span class="line">    android:<span class="attribute">versionName</span>=<span class="string">"1.0"</span></span><br><span class="line">    android:<span class="attribute">sharedUserId</span>=<span class="string">"leoyanblog.com"</span></span><br><span class="line">    &gt;</span><br></pre></td></tr></table></figure>
+
+<p>应用2：com.leoyanblog.activity</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;manifestxmlns:<span class="attribute">android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attribute">package</span>=<span class="string">"com.leoyanblog.activity"</span></span><br><span class="line">    android:<span class="attribute">versionCode</span>=<span class="string">"1"</span></span><br><span class="line">    android:<span class="attribute">versionName</span>=<span class="string">"1.0"</span></span><br><span class="line">    android:<span class="attribute">sharedUserId</span>=<span class="string">"leoyanblog.com"</span></span><br><span class="line">    &gt;</span><br></pre></td></tr></table></figure>
+
+<p>这两个应用的 userId 相同，都为”leoyanblog.com”，因此两个应用共享 userId，如果应用1想访问应用2的数据怎么办呢？</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content content = this.create<span class="constructor">PackageContent(“<span class="params">com</span>.<span class="params">leoyanblog</span>.<span class="params">activity</span>”, Content.CONTENT_IGNORE_SECURITY)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这样通过 content 可以获取到应用2中的资源，包括：数据库，preference，资源文件等。</p>
+<blockquote>
+<p>注意：<br>基于安全考虑，两个　package　需要有相同的签名。否则如果没有验证，应用程序一旦设置了 sharedUserId，当程序被破解，其它应用也可以访问我们的数据。数据不安全设置共享也就没有多大意义了。</p>
+</blockquote>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>如果想要不同的 APK 之间，通过 sharedUserId 共享数据需要满足以下条件：</p>
+<ol>
+<li><p>APK 的签名必须相同</p>
+</li>
+<li><p>android:shareUserId 的值必须相同</p>
+</li>
+<li><p>如果想要运行在同一个进行当中，必须设置 android:process 的值相同。</p>
+</li>
+</ol>
+<p>application 设置应用程序的全部组件都运行在某个线程中</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;application </span><br><span class="line">    android:<span class="attribute">allowBackup</span>=<span class="string">"true"</span></span><br><span class="line">    android:<span class="attribute">icon</span>=<span class="string">"@drawable/ic_launcher"</span></span><br><span class="line">    android:<span class="attribute">label</span>=<span class="string">"@string/app_name"</span></span><br><span class="line">    android:<span class="attribute">theme</span>=<span class="string">"@style/AppTheme"</span></span><br><span class="line">    android:<span class="attribute">process</span>=<span class="string">"leoyan.com"</span>&gt;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2017/04/30.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Leo Yan">
+      <meta itemprop="description" content="离经不叛道，特立不独行。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeoYan Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/post/2017/04/30.html" class="post-title-link" itemprop="url">Android 清单文件之 Manifest 标签详解</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-04-30 10:00:00" itemprop="dateCreated datePublished" datetime="2017-04-30T10:00:00+08:00">2017-04-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-07-03 17:59:22" itemprop="dateModified" datetime="2017-07-03T17:59:22+08:00">2017-07-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E6%B8%85%E5%8D%95%E6%96%87%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">清单文件</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>转载请注明出处：<a href="http://www.leoyanblog.com">www.leoyanblog.com</a></p>
+<p>本文出自 LeoYan 的博客</p>
+<p>本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。</p>
+</blockquote>
+<h2 id="Manifest-属性"><a href="#Manifest-属性" class="headerlink" title="Manifest:属性"></a>Manifest:属性</h2><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;manifest xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    package=<span class="string">"com.leoyanblog.app"</span></span><br><span class="line">    android:sharedUserId=<span class="string">"string"</span></span><br><span class="line">    android:sharedUserLabel=<span class="string">"string resource"</span></span><br><span class="line">    android:versionCode=<span class="string">"integer"</span></span><br><span class="line">    android:versionName=<span class="string">"string"</span></span><br><span class="line">    android:installLocation=[<span class="string">"auto"</span> <span class="string">| "</span>internalOnly<span class="string">" | "</span>preferExternal<span class="string">"]&gt;</span></span><br><span class="line">&lt;/manifest&gt;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="1、xmlns-android"><a href="#1、xmlns-android" class="headerlink" title="1、xmlns:android"></a>1、xmlns:android</h3><p>定义android命名空间，一般为<a href="http://schemas.android.com/apk/res/android，这样使得Android中各种标准属性能在文件中使用，提供了大部分元素中的数据。" target="_blank" rel="noopener">http://schemas.android.com/apk/res/android，这样使得Android中各种标准属性能在文件中使用，提供了大部分元素中的数据。</a></p>
+<h3 id="2、package"><a href="#2、package" class="headerlink" title="2、package"></a>2、package</h3><p>指定本应用内Java主程序包的包名，它也是一个应用进程的默认名称</p>
+<h3 id="3、sharedUserId"><a href="#3、sharedUserId" class="headerlink" title="3、sharedUserId"></a>3、sharedUserId</h3><p>当APK安装的时候，userId这个标志就会产生。APK在设备上的整个生命周期中，这个ID不再改变。同一个应用包在不同设备上可能有不同的userId，重要的是在给定的设备上，每个应用包有自己独立的userId。</p>
+<p>userId的特点：</p>
+<p>1.） 作为APK身份的标识</p>
+<p>2.） userId对应一个Linux用户，所以不同APK(用户)间互相访问数据默认是禁止的。</p>
+<p>若要共享数据，第一可以采用Share Preference / Content Provider，第二种就可以采用sharedUserId了，将不同APK的sharedUserId都设为一样，则这些APK之间就可以互相共享数据了。详见：<a href="http://www.leoyanblog.com/post/2017/05/07.html">http://www.leoyanblog.com/post/2017/05/07.html</a></p>
+<h3 id="4、sharedUserLabel"><a href="#4、sharedUserLabel" class="headerlink" title="4、sharedUserLabel"></a>4、sharedUserLabel</h3><p>这个属性给共享的 UserId 定义了一个用户可读的标签。这个标签必须用字符串资源来设置，不能使用原生的字符串。</p>
+<p>这个属性在API Level 3中被引入，只有在sharedUserId属性被设置，这个属性才有意义。</p>
+<h3 id="5、versionCode"><a href="#5、versionCode" class="headerlink" title="5、versionCode"></a>5、versionCode</h3><p>是给设备程序识别版本(升级)用的，必须是一个interger值，代表app更新过多少次，比如第一版一般为1，之后若要更新版本就设置为2，3等等。。。</p>
+<h3 id="6、versionName"><a href="#6、versionName" class="headerlink" title="6、versionName"></a>6、versionName</h3><p>这个名称是给用户看的，你可以将你的APP版本号设置为1.1版，后续更新版本设置为1.2、2.0版本等等。。。</p>
+<h3 id="7、installLocation"><a href="#7、installLocation" class="headerlink" title="7、installLocation"></a>7、installLocation</h3><p>安装参数，是Android2.2中的一个新特性，installLocation有三个值可以选择：internalOnly、auto、preferExternal</p>
+<p>选择preferExternal，系统会优先考虑将APK安装到SD卡上（当然最终用户可以选择为内部ROM存储上，如果SD存储已满，也会安装到内部存储上）</p>
+<p>选择auto，系统将会根据存储空间自己去适应</p>
+<p>选择internalOnly，是指必须安装到内部才能运行</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2017/04/23.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Leo Yan">
+      <meta itemprop="description" content="离经不叛道，特立不独行。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeoYan Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/post/2017/04/23.html" class="post-title-link" itemprop="url">Android 清单文件AndroidManifest.xml最全详解</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-04-23 10:00:00" itemprop="dateCreated datePublished" datetime="2017-04-23T10:00:00+08:00">2017-04-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-07-04 15:25:45" itemprop="dateModified" datetime="2017-07-04T15:25:45+08:00">2017-07-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E6%B8%85%E5%8D%95%E6%96%87%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">清单文件</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>转载请注明出处：<a href="http://www.leoyanblog.com">www.leoyanblog.com</a></p>
+<p>本文出自 LeoYan 的博客</p>
+<p>本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。</p>
+</blockquote>
+<h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>AndroidManifest.xml 是每个Android程序中必须的文件，它位于整个项目的根目录。我们每天都在使用这个文件，往里面配置程序运行所必要的组件，权限，以及一些相关信息。但是对于这个文件，我们真正又了解多少了，还是只是停留在只会简单的配置，而不明白其中的具体含义，以及为什么要这样设置？今天就让我们来详细的学习一下这个文件里各项参数的具体含义，因为它是整个应用的入口，所以有助于我们更加深入的理解Android。</p>
+<h2 id="二、概述"><a href="#二、概述" class="headerlink" title="二、概述"></a>二、概述</h2><p>　　AndroidManifest.xml是Android应用的入口文件，它描述了package中暴露的组件（activities, services, 等等），他们各自的实现类，各种能被处理的数据和启动位置。 除了能声明程序中的Activities, ContentProviders, Services和Intent Receivers，还能指定permissions和instrumentation（安全控制和测试）。 
+　　</p>
+<h2 id="三、结构"><a href="#三、结构" class="headerlink" title="三、结构"></a>三、结构</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xmlversion="1.0"encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">manifest</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-sdk</span>/&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-configuration</span>/&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-feature</span>/&gt;</span>  </span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-permission</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">permission</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">permission-tree</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">permission-group</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">instrumentation</span>/&gt;</span> </span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">supports-screens</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">application</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">activity</span>&gt;</span> </span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">action</span>/&gt;</span> </span><br><span class="line">                <span class="tag">&lt;<span class="name">category</span>/&gt;</span> </span><br><span class="line">            <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">activity-alias</span>&gt;</span> </span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span><span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span> </span><br><span class="line">            <span class="tag">&lt;<span class="name">meta-data</span>/&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">activity-alias</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">service</span>&gt;</span> </span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span><span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span> </span><br><span class="line">            <span class="tag">&lt;<span class="name">meta-data</span>/&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">service</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">receiver</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span><span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span> </span><br><span class="line">            <span class="tag">&lt;<span class="name">meta-data</span>/&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">receiver</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">provider</span>&gt;</span> </span><br><span class="line">            <span class="tag">&lt;<span class="name">grant-uri-permission</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">meta-data</span>/&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">provider</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">uses-library</span>/&gt;</span> </span><br><span class="line">    <span class="tag">&lt;/<span class="name">application</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="三、详解"><a href="#三、详解" class="headerlink" title="三、详解"></a>三、详解</h2><h3 id="1、Manifest"><a href="#1、Manifest" class="headerlink" title="1、Manifest"></a>1、Manifest</h3><p>详见: <a href="http://www.leoyanblog.com/post/2017/04/30.html">http://www.leoyanblog.com/post/2017/04/30.html</a></p>
+<h3 id="2、Application"><a href="#2、Application" class="headerlink" title="2、Application"></a>2、Application</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+<h3 id="3、Activity"><a href="#3、Activity" class="headerlink" title="3、Activity"></a>3、Activity</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+<h3 id="4、intent-filter"><a href="#4、intent-filter" class="headerlink" title="4、intent-filter"></a>4、intent-filter</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+<h3 id="5、meta-data"><a href="#5、meta-data" class="headerlink" title="5、meta-data"></a>5、meta-data</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+<h3 id="6、activity-alias"><a href="#6、activity-alias" class="headerlink" title="6、activity-alias"></a>6、activity-alias</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+<h3 id="7、Service"><a href="#7、Service" class="headerlink" title="7、Service"></a>7、Service</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+<h3 id="8、Receiver"><a href="#8、Receiver" class="headerlink" title="8、Receiver"></a>8、Receiver</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+<h3 id="9、Provider-属性"><a href="#9、Provider-属性" class="headerlink" title="9、Provider:属性"></a>9、Provider:属性</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+<h3 id="10、uses-library"><a href="#10、uses-library" class="headerlink" title="10、uses-library"></a>10、uses-library</h3><p>用户库，可自定义。所有android的包都可以引用</p>
+<h3 id="11、supports-screens"><a href="#11、supports-screens" class="headerlink" title="11、supports-screens"></a>11、supports-screens</h3><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;supports-screens  </span><br><span class="line">    android:smallScreens  = [<span class="string">"true"</span> <span class="string">| "</span>false<span class="string">"] </span></span><br><span class="line">    android:normalScreens = [<span class="string">"true"</span> <span class="string">| "</span>false<span class="string">"] </span></span><br><span class="line">    android:largeScreens  = [<span class="string">"true"</span> <span class="string">| "</span>false<span class="string">"] </span></span><br><span class="line">    android:anyDensity    = [<span class="string">"true"</span> <span class="string">| "</span>false<span class="string">"] /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这是在android1.6以后的新特性，支持多屏幕机制</p>
+<p>各属性含义：这四个属性，是否支持小屏，是否支持中屏，是否支持大屏，是否支持多种不同密度</p>
+<h3 id="12、uses-configuration-与uses-feature性能都差不多"><a href="#12、uses-configuration-与uses-feature性能都差不多" class="headerlink" title="12、uses-configuration 与uses-feature性能都差不多"></a>12、uses-configuration 与uses-feature性能都差不多</h3><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-configuration </span><br><span class="line">    android:<span class="attr">reqFiveWayNav</span>   = [<span class="string">"true"</span> | <span class="string">"false"</span>]</span><br><span class="line">    android:<span class="attr">reqHardKeyboard</span> = [<span class="string">"true"</span> | <span class="string">"false"</span>]</span><br><span class="line">    android:<span class="attr">reqKeyboardType</span> = [<span class="string">"undefined"</span> | <span class="string">"nokeys"</span> | <span class="string">"qwerty"</span> | <span class="string">"twelvekey"</span>]</span><br><span class="line">    android:<span class="attr">reqNavigation</span>   = [<span class="string">"undefined"</span> | <span class="string">"nonav"</span> | <span class="string">"dpad"</span> | <span class="string">"trackball"</span> | <span class="string">"wheel"</span>]</span><br><span class="line">    android:<span class="attr">reqTouchScreen</span>  = [<span class="string">"undefined"</span> | <span class="string">"notouch"</span> | <span class="string">"stylus"</span> | <span class="string">"finger"</span>] /&gt;</span><br><span class="line"></span><br><span class="line">&lt;uses-feature</span><br><span class="line">    android:<span class="attr">glEsVersion</span> = <span class="string">"integer"</span></span><br><span class="line">    android:<span class="attr">name</span> = <span class="string">"string"</span></span><br><span class="line">    android:<span class="attr">required</span> = [<span class="string">"true"</span> | <span class="string">"false"</span>] /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这两者都是在描述应用所需要的硬件和软件特性，以便防止应用在没有这些特性的设备上安装。</p>
+<h3 id="13、uses-sdk"><a href="#13、uses-sdk" class="headerlink" title="13、uses-sdk"></a>13、uses-sdk</h3><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-sdk</span><br><span class="line">    android:<span class="attr">minSdkVersion</span>    = <span class="string">"integer"</span></span><br><span class="line">    android:<span class="attr">targetSdkVersion</span> = <span class="string">"integer"</span></span><br><span class="line">    android:<span class="attr">maxSdkVersion</span>    = <span class="string">"integer"</span>/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>描述应用所需的api level，就是版本，目前是android 2.2 = 8，android2.1 = 7，android1.6 = 4，android1.5=3</p>
+<p>在此属性中可以指定支持的最小版本，目标版本以及最大版本</p>
+<h3 id="14、instrumentation"><a href="#14、instrumentation" class="headerlink" title="14、instrumentation"></a>14、instrumentation</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;instrumentation</span><br><span class="line">    android:functionalTest  = [<span class="string">"true"</span> | <span class="string">"false"</span>]</span><br><span class="line">    android:handleProfiling = [<span class="string">"true"</span> | <span class="string">"false"</span>]</span><br><span class="line">    android:<span class="attribute">icon</span>=<span class="string">"drawable resource"</span></span><br><span class="line">    android:<span class="attribute">label</span>=<span class="string">"string resource"</span></span><br><span class="line">    android:<span class="attribute">name</span>=<span class="string">"string"</span></span><br><span class="line">    android:<span class="attribute">targetPackage</span>=<span class="string">"string"</span>/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>定义一些用于探测和分析应用性能等等相关的类，可以监控程序。在各个应用程序的组件之前instrumentation类被实例化</p>
+<p>android:functionalTest(解释：instrumentation类是否能运行一个功能测试，默认为false)</p>
+<h3 id="15、permission、uses-permission、permission-tree-、permission-group-区别"><a href="#15、permission、uses-permission、permission-tree-、permission-group-区别" class="headerlink" title="15、permission、uses-permission、permission-tree 、permission-group 区别"></a>15、permission、uses-permission、permission-tree 、permission-group 区别</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2017/04/16.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Leo Yan">
+      <meta itemprop="description" content="离经不叛道，特立不独行。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeoYan Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/post/2017/04/16.html" class="post-title-link" itemprop="url">Android SDK版本号 与 API Level 对应关系</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-04-16 10:00:00" itemprop="dateCreated datePublished" datetime="2017-04-16T10:00:00+08:00">2017-04-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-06-12 16:37:34" itemprop="dateModified" datetime="2017-06-12T16:37:34+08:00">2017-06-12</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/API/" itemprop="url" rel="index"><span itemprop="name">API</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>转载请注明出处：<a href="http://www.leoyanblog.com">www.leoyanblog.com</a></p>
+<p>本文出自 LeoYan 的博客</p>
+<p>本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>最开始接触Android开发，多次遇到SDK版本与API LEVEL的对应关系问题，就进行了一下总结，以备后续查看。</p>
+</blockquote>
+<p>API是开发用的，所以API LEVEL可以认为是内部的；而SDK的版本提供了新特性给用户，是外部可见的。<br>可以查看以下网址以获取最新的对应关系：</p>
+<p><a href="https://developer.android.google.cn/index.html" target="_blank" rel="noopener">https://developer.android.google.cn/index.html</a></p>
+<table>
+<thead>
+<tr>
+<th align="center">Vsersion Name</th>
+<th align="center">Version Code</th>
+<th align="center">API Level</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Nougat 牛轧糖</td>
+<td align="center">Android 7.1.x</td>
+<td align="center">25</td>
+</tr>
+<tr>
+<td align="center">Nougat 牛轧糖</td>
+<td align="center">Android 7.0</td>
+<td align="center">24</td>
+</tr>
+<tr>
+<td align="center">Marshmallow 棉花糖</td>
+<td align="center">Android 6.0</td>
+<td align="center">23</td>
+</tr>
+<tr>
+<td align="center">Lollipop  棒棒糖</td>
+<td align="center">Android 5.1</td>
+<td align="center">22</td>
+</tr>
+<tr>
+<td align="center">Lollipop  棒棒糖</td>
+<td align="center">Android 5.0 - 5.0.2</td>
+<td align="center">21</td>
+</tr>
+<tr>
+<td align="center">KitKat with wearable extensions 奇巧巧克力棒</td>
+<td align="center">Android 4.4W</td>
+<td align="center">20</td>
+</tr>
+<tr>
+<td align="center">KITKAT 奇巧巧克力棒</td>
+<td align="center">Android 4.4</td>
+<td align="center">19</td>
+</tr>
+<tr>
+<td align="center">JELLY_BEAN_MR2 糖豆</td>
+<td align="center">Android 4.3</td>
+<td align="center">18</td>
+</tr>
+<tr>
+<td align="center">JELLY_BEAN_MR1 糖豆</td>
+<td align="center">Android 4.2, 4.2.2</td>
+<td align="center">17</td>
+</tr>
+<tr>
+<td align="center">JELLY_BEAN 糖豆</td>
+<td align="center">Android 4.1, 4.1.1</td>
+<td align="center">16</td>
+</tr>
+<tr>
+<td align="center">ICE_CREAM_SANDWICH_MR1 冰激凌三明治</td>
+<td align="center">Android 4.0.3 - 4.0.4</td>
+<td align="center">15</td>
+</tr>
+<tr>
+<td align="center">ICE_CREAM_SANDWICH 冰激凌三明治</td>
+<td align="center">Android 4.0 - 4.0.2</td>
+<td align="center">14</td>
+</tr>
+<tr>
+<td align="center">HONEYCOMB_MR2 蜂巢</td>
+<td align="center">Android 3.2</td>
+<td align="center">13</td>
+</tr>
+<tr>
+<td align="center">HONEYCOMB_MR1 蜂巢</td>
+<td align="center">Android 3.1.x</td>
+<td align="center">12</td>
+</tr>
+<tr>
+<td align="center">HONEYCOMB 蜂巢</td>
+<td align="center">Android 3.0.x</td>
+<td align="center">11</td>
+</tr>
+<tr>
+<td align="center">GINGERBREAD_MR1 姜饼</td>
+<td align="center">Android 2.3.3 - 2.3.7</td>
+<td align="center">10</td>
+</tr>
+<tr>
+<td align="center">GINGERBREAD 姜饼</td>
+<td align="center">Android 2.3 - 2.3.2</td>
+<td align="center">9</td>
+</tr>
+<tr>
+<td align="center">FROYO 冻酸奶</td>
+<td align="center">Android 2.2.x</td>
+<td align="center">8</td>
+</tr>
+<tr>
+<td align="center">ECLAIR_MR1  松饼</td>
+<td align="center">Android 2.1.x</td>
+<td align="center">7</td>
+</tr>
+<tr>
+<td align="center">ECLAIR_0_1 松饼</td>
+<td align="center">Android 2.0.1</td>
+<td align="center">6</td>
+</tr>
+<tr>
+<td align="center">ECLAIR 松饼</td>
+<td align="center">Android 2.0</td>
+<td align="center">5</td>
+</tr>
+<tr>
+<td align="center">Donut 甜甜圈</td>
+<td align="center">Android 1.6</td>
+<td align="center">4</td>
+</tr>
+<tr>
+<td align="center">Cupcake 纸杯蛋糕</td>
+<td align="center">Android 1.5</td>
+<td align="center">3</td>
+</tr>
+<tr>
+<td align="center">Petit Four 花式小蛋糕</td>
+<td align="center">Android 1.1</td>
+<td align="center">2</td>
+</tr>
+<tr>
+<td align="center">BASE</td>
+<td align="center">Android 1.0</td>
+<td align="center">1</td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2017/04/09.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Leo Yan">
+      <meta itemprop="description" content="离经不叛道，特立不独行。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeoYan Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/post/2017/04/09.html" class="post-title-link" itemprop="url">Android 命名规范 （提高代码可读性）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-04-09 10:00:00" itemprop="dateCreated datePublished" datetime="2017-04-09T10:00:00+08:00">2017-04-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-06-07 11:42:31" itemprop="dateModified" datetime="2017-06-07T11:42:31+08:00">2017-06-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E5%91%BD%E5%90%8D%E8%A7%84%E8%8C%83/" itemprop="url" rel="index"><span itemprop="name">命名规范</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>转载请注明出处：<a href="http://www.leoyanblog.com">www.leoyanblog.com</a></p>
+<p>本文出自 LeoYan 的博客</p>
+<p>本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。</p>
+</blockquote>
+<p><strong>标识符命名法主要有四种：</strong></p>
+<ol>
+<li>Camel命名法：又称小驼峰命名法。除首单词外，其余所有单词的第一个字母大写，如：fooBar;</li>
+<li>Pascal命名法：又称大驼峰命名法。所有单词的第一个字母大写，如：FooBar；</li>
+<li>下划线命名法：单词与单词间用下划线做间隔，如：foo_bar;</li>
+<li>匈牙利命名法：开头字母用变量类型的缩写，其余部分用变量的英文或英文的缩写，要求单词第一个字母大写。如：int iMyAge; “i”是int类型的缩写；</li>
+</ol>
+<blockquote>
+<p>安卓App层开发主要是Java语言，所以基本使用除了第四种外的命名方式；</p>
+</blockquote>
+<p><strong>英文缩写在命名是必须的，遵循下面规则：</strong></p>
+<ol>
+<li>较短的单词可通过去掉“元音”形成缩写，如icon-&gt;ic;</li>
+<li>较长的单词可取单词的头几个字母形成缩写，如：average-&gt;avg;</li>
+<li>此外还有一些约定成俗的英文单词缩写，如 Internationalization-&gt;I18N;</li>
+<li>程序中不要用缩写，除非该缩写是约定俗成的。</li>
+</ol>
+<p><strong>下面为常见的英文单词缩写:</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">名称</th>
+<th align="left">缩写</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">icon</td>
+<td align="left">ic （主要用在app的图标）</td>
+</tr>
+<tr>
+<td align="left">color</td>
+<td align="left">cl（主要用于颜色值）</td>
+</tr>
+<tr>
+<td align="left">divider</td>
+<td align="left">di（主要用于分隔线，不仅包括Listview中的divider，还包括普通布局中的线）</td>
+</tr>
+<tr>
+<td align="left">selector</td>
+<td align="left">sl（主要用于某一view多种状态，不仅包括Listview中的selector，还包括按钮的selector）</td>
+</tr>
+<tr>
+<td align="left">average</td>
+<td align="left">avg</td>
+</tr>
+<tr>
+<td align="left">background</td>
+<td align="left">Bg（主要用于布局和子布局的背景）</td>
+</tr>
+<tr>
+<td align="left">buffer</td>
+<td align="left">buf</td>
+</tr>
+<tr>
+<td align="left">control</td>
+<td align="left">ctrl</td>
+</tr>
+<tr>
+<td align="left">delete</td>
+<td align="left">del</td>
+</tr>
+<tr>
+<td align="left">document</td>
+<td align="left">doc</td>
+</tr>
+<tr>
+<td align="left">error</td>
+<td align="left">err</td>
+</tr>
+<tr>
+<td align="left">escape</td>
+<td align="left">esc</td>
+</tr>
+<tr>
+<td align="left">increment</td>
+<td align="left">inc</td>
+</tr>
+<tr>
+<td align="left">infomation</td>
+<td align="left">info</td>
+</tr>
+<tr>
+<td align="left">initial</td>
+<td align="left">init</td>
+</tr>
+<tr>
+<td align="left">image</td>
+<td align="left">img</td>
+</tr>
+<tr>
+<td align="left">Internationalization</td>
+<td align="left">I18N</td>
+</tr>
+<tr>
+<td align="left">length</td>
+<td align="left">len</td>
+</tr>
+<tr>
+<td align="left">library</td>
+<td align="left">lib</td>
+</tr>
+<tr>
+<td align="left">message</td>
+<td align="left">msg</td>
+</tr>
+<tr>
+<td align="left">password</td>
+<td align="left">pwd</td>
+</tr>
+<tr>
+<td align="left">position</td>
+<td align="left">pos</td>
+</tr>
+<tr>
+<td align="left">server</td>
+<td align="left">srv</td>
+</tr>
+<tr>
+<td align="left">string</td>
+<td align="left">str</td>
+</tr>
+<tr>
+<td align="left">temp</td>
+<td align="left">tmp</td>
+</tr>
+<tr>
+<td align="left">window</td>
+<td align="left">wnd(win)</td>
+</tr>
+</tbody></table>
+<p><strong>命名规范：</strong></p>
+<p> <strong>包（packages）：</strong> 采用反域名命名规则，全部使用小写字母。一级包名为地顶级域名如com，二级包名为xx（可以是公司或个人的随便），三级包名根据应用进行命名，四级包名为模块名或层级名；如 com.tinyx.myapp.activities;</p>
+<p><strong>类（classes）：</strong> 用Pascal命名法，尽量避免缩写，如：MyActivity；缩写是众所周知的，如HTML,URL；类名称中包含单词缩写，则单词缩写的每个字母均应大写，如：PublicHTML，CommonURL。</p>
+<p><strong>接口（interface）：</strong> 与类一样用Pascal命名法，多以able或ible结尾，多用作表示行为，如Runnable，Accessible；</p>
+<p><strong>方法（methods）：</strong> 动词或动名词，采用Camel命名法，如：onCreate(), run()；下面是一些建议：</p>
+<ul>
+<li>初始化相关方法，使用init为前缀标识，如：初始化布局initView()；</li>
+<li>boolean型使用is或check为前缀标识, 如：checkValue()、isValidate();</li>
+<li>返回某个值的方法，使用get为前缀标识，如：getName();</li>
+<li>数据进行处理相关，尽量使用process为前缀标识，如：processUpdate();</li>
+<li>保存数据相关，使用save为前缀标识，如：saveData();</li>
+<li>对数据重置的，使用reset前缀标识，如：resetData();</li>
+<li>清除数据相关，使用clear前缀标识，如：clearData();</li>
+<li>移除某些项目，使用remove前缀标识，如:removeItem();</li>
+<li>绘制数据或效果相关的，使用draw前缀标识，如：drawCircle();</li>
+</ul>
+<p><strong>变量（variables）：</strong> 采用Pascal命名法，建议采用有意义的命名如：firstName, lastName;</p>
+<ul>
+<li>模型类变量默认以上规则</li>
+</ul>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">public</span> <span class="keyword">class</span> <span class="keyword">User</span> &#123;</span><br><span class="line">    <span class="built_in">public</span> String <span class="type">name</span>;</span><br><span class="line">    <span class="built_in">public</span> String phone;</span><br><span class="line">    <span class="built_in">public</span> <span class="type">int</span> sex; //<span class="number">1</span>，男 <span class="number">2</span>，女</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">public</span> <span class="keyword">User</span>() &#123;</span><br><span class="line">        this.name = "myname";</span><br><span class="line">        this.phone = "123“</span><br><span class="line">        this.sex = 0;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>非模型类全局参数建议加上小写m开头；</li>
+</ul>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public <span class="class"><span class="keyword">class</span> <span class="title">TestActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">ZoomableImageView</span> mZoomableView;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">TabLayout</span> mTabLayout;</span><br><span class="line">    <span class="keyword">private</span> int mItemsCount;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> void onCreate(<span class="type">Bundle</span> savedInstanceState) &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(<span class="type">R</span>.layout.test_activity);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>常量（constants）：</strong> 全部大写，采用下划线命名法。如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX_ITEMS= <span class="number">10</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = User<span class="class">.<span class="keyword">class</span>.<span class="title">getSimpleName</span>()</span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong>资源文件命名（resources）：</strong> 采用下划线命名法，全部小写，针对不同资源，建议用下面的命名方法；</p>
+<ul>
+<li>drawable资源，加前缀命名：前缀_功能_模块_说明.xml/png/</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">说明</th>
+<th align="left">命名范例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">图标：建议格式 ic_xxx；</td>
+<td align="left">ic_appicon.png</td>
+</tr>
+<tr>
+<td align="left">背景：建议格式 bg_xxx；</td>
+<td align="left">bg_normal_button_default.xml, bg_normal_button_press.xml</td>
+</tr>
+</tbody></table>
+<ul>
+<li>layout资源文件，前缀命名：类型_模块_功能_说明.xml，举一些常用的例子如下：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">说明</th>
+<th align="left">命名范例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Activity布局文件</td>
+<td align="left">activity_main.xml</td>
+</tr>
+<tr>
+<td align="left">Fragment布局文件</td>
+<td align="left">fragment_main.xml</td>
+</tr>
+<tr>
+<td align="left">局部布局View文件</td>
+<td align="left">view_main_header.xml, view_main_bottom.xml</td>
+</tr>
+<tr>
+<td align="left">自定义提示对话框</td>
+<td align="left">dialog_alert.xml</td>
+</tr>
+<tr>
+<td align="left">列表项等</td>
+<td align="left">fragment_user_list_item.xml</td>
+</tr>
+</tbody></table>
+<ul>
+<li>动画anim资源文件（anim只有一种资源，所以不必加前缀区分）：模块_功能_动画_方向.xml</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">说明</th>
+<th align="left">命名范例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">淡入</td>
+<td align="left">main_button_fade_in.xml</td>
+</tr>
+<tr>
+<td align="left">淡出</td>
+<td align="left">main_button_fade_out.xml</td>
+</tr>
+<tr>
+<td align="left">从下方推入</td>
+<td align="left">button_push_down_in.xml</td>
+</tr>
+<tr>
+<td align="left">从下方推出</td>
+<td align="left">main_button_push_down_out.xml</td>
+</tr>
+</tbody></table>
+<ul>
+<li>menu菜单资源文件（menu只有一种资源，所以不必加前缀区分）：模块_功能_说明.xml</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">说明</th>
+<th align="left">命名范例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">主界面菜单</td>
+<td align="left">main_activity.xml</td>
+</tr>
+<tr>
+<td align="left">Fragment界面菜单</td>
+<td align="left">user_fragment.xml</td>
+</tr>
+</tbody></table>
+<ul>
+<li>values资源，这个主要分下面几种资源：</li>
+</ul>
+<p>1、 ids资源，主要存放是界面控件的id值，用下划线小写命名法，前缀方式：前缀_模块_功能_说明，常用界面控件命名如下：</p>
+<table>
+<thead>
+<tr>
+<th align="left">说明</th>
+<th align="left">命名范例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">布局和子控件(ViewGroup，自定义View)</td>
+<td align="left">view_main_topnav</td>
+</tr>
+<tr>
+<td align="left">TextView</td>
+<td align="left">tv_main_title</td>
+</tr>
+<tr>
+<td align="left">Button</td>
+<td align="left">btn_user_add</td>
+</tr>
+<tr>
+<td align="left">ImageButton</td>
+<td align="left">imgbtn_user_del</td>
+</tr>
+<tr>
+<td align="left">ImageView</td>
+<td align="left">img_thumb</td>
+</tr>
+<tr>
+<td align="left">CheckBox</td>
+<td align="left">cb_sex</td>
+</tr>
+<tr>
+<td align="left">RadioButton</td>
+<td align="left">rbtn_answer</td>
+</tr>
+<tr>
+<td align="left">EditText</td>
+<td align="left">et_username</td>
+</tr>
+<tr>
+<td align="left">ToggleButton</td>
+<td align="left">toggle_funtion</td>
+</tr>
+<tr>
+<td align="left">ProgressBar</td>
+<td align="left">pb_download</td>
+</tr>
+<tr>
+<td align="left">SeekBar</td>
+<td align="left">sb_progress</td>
+</tr>
+<tr>
+<td align="left">ProgressBar</td>
+<td align="left">pb_download</td>
+</tr>
+<tr>
+<td align="left">VideoView</td>
+<td align="left">vv_course</td>
+</tr>
+<tr>
+<td align="left">WebView</td>
+<td align="left">wv_download</td>
+</tr>
+<tr>
+<td align="left">RantingBar</td>
+<td align="left">rb_download</td>
+</tr>
+<tr>
+<td align="left">Spinner</td>
+<td align="left">sp_cities</td>
+</tr>
+<tr>
+<td align="left">ScollView</td>
+<td align="left">sv_main</td>
+</tr>
+<tr>
+<td align="left">TextSwitch</td>
+<td align="left">sp_cities</td>
+</tr>
+<tr>
+<td align="left">ListView/ExpandListView/RecyclerView</td>
+<td align="left">lv_cities</td>
+</tr>
+<tr>
+<td align="left">MapView</td>
+<td align="left">mv_location</td>
+</tr>
+</tbody></table>
+<p>2、strings/arrays/dimens资源，用下划线小写命名法，不加任何前后缀，格式：模块_功能_说明。</p>
+<p>3、attrs/colors/ids的属性和名称使用Camel命名法；styles的属性使用Camel命名法，名称使用Pascal命名法；如下面：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--attrs--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"text"</span> <span class="attr">format</span>=<span class="string">"string"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"itemIcon"</span> <span class="attr">format</span>=<span class="string">"reference"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"showToggle"</span> <span class="attr">format</span>=<span class="string">"boolean"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">attr</span> <span class="attr">name</span>=<span class="string">"showVersion"</span> <span class="attr">format</span>=<span class="string">"boolean"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">"Theme.AppCompat.Light.NoActionBar"</span>&gt;</span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"windowActionBar"</span>&gt;</span>false<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span></span><br><span class="line"><span class="xml">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"windowNoTitle"</span>&gt;</span>true<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span></span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--colors--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">"colorPrimary"</span>&gt;</span>#009688<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">"colorPrimaryDark"</span>&gt;</span>#00796b<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">color</span> <span class="attr">name</span>=<span class="string">"colorAccent"</span>&gt;</span>#cddc39<span class="tag">&lt;/<span class="name">color</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--ids--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"tabLayout"</span> <span class="attr">type</span>=<span class="string">"id"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"viewPager"</span> <span class="attr">type</span>=<span class="string">"id"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"viewContainer"</span> <span class="attr">type</span>=<span class="string">"id"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2017/04/02.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Leo Yan">
+      <meta itemprop="description" content="离经不叛道，特立不独行。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeoYan Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/post/2017/04/02.html" class="post-title-link" itemprop="url">Android 之 四大组件总览</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-04-02 10:00:00" itemprop="dateCreated datePublished" datetime="2017-04-02T10:00:00+08:00">2017-04-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-05-18 21:17:28" itemprop="dateModified" datetime="2017-05-18T21:17:28+08:00">2017-05-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">四大组件</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6/%E6%80%BB%E8%A7%88/" itemprop="url" rel="index"><span itemprop="name">总览</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>转载请注明出处：<a href="http://www.leoyanblog.com">www.leoyanblog.com</a></p>
+<p>本文出自 LeoYan 的博客</p>
+<p>本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。</p>
+</blockquote>
+<h2 id="图谱"><a href="#图谱" class="headerlink" title="图谱"></a>图谱</h2><p><img src="http://oddu03if7.bkt.clouddn.com/sdzj.png" alt="四大组件"></p>
+<h2 id="Android-四大组件"><a href="#Android-四大组件" class="headerlink" title="Android 四大组件"></a>Android 四大组件</h2><p>&#8195;&#8195;Android 四大组件分别是：</p>
+<ul>
+<li>Activity（活动，用于表现功能）；</li>
+<li>Service（服务，进行一些不需要UI存在的操作）；</li>
+<li>BroadcastReceiver（广播接收器，用于接收广播）；</li>
+<li>ContentProvider（内容提供者，支持在多个应用中存储和读取数据）。</li>
+</ul>
+<h2 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h2><p><strong>Android 之 Activity (一) 基础知识</strong></p>
+<p>&#8195;&#8195;<a href="http://www.leoyanblog.com/post/2017/02/05.html">http://www.leoyanblog.com/post/2017/02/05.html</a></p>
+<p><strong>Android 之 Activity (二) 生命周期</strong></p>
+<p>&#8195;&#8195;<a href="http://www.leoyanblog.com/post/2017/02/12.html">http://www.leoyanblog.com/post/2017/02/12.html</a></p>
+<p><strong>Android 之 Activity (三) Task 和 LaunchMode</strong></p>
+<p>&#8195;&#8195;<a href="http://www.leoyanblog.com/post/2017/02/19.html">http://www.leoyanblog.com/post/2017/02/19.html</a></p>
+<h2 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h2><p><strong>Android 之 Service 相关知识</strong></p>
+<p>&#8195;&#8195;<a href="http://www.leoyanblog.com/post/2017/02/26.html">http://www.leoyanblog.com/post/2017/02/26.html</a></p>
+<h2 id="BroadcastReceiver"><a href="#BroadcastReceiver" class="headerlink" title="BroadcastReceiver"></a>BroadcastReceiver</h2><p><strong>Android 之 BroadcastReceiver (一) 相关知识</strong></p>
+<p>&#8195;&#8195;<a href="http://www.leoyanblog.com/post/2017/03/05.html">http://www.leoyanblog.com/post/2017/03/05.html</a></p>
+<p><strong>Android 之 BroadcastReceiver (二) 常见的系统广播</strong></p>
+<p>&#8195;&#8195;<a href="http://www.leoyanblog.com/post/2017/03/12.html">http://www.leoyanblog.com/post/2017/03/12.html</a></p>
+<h2 id="ContentProvider"><a href="#ContentProvider" class="headerlink" title="ContentProvider"></a>ContentProvider</h2><p><strong>Android 之 ContentProvider (一) 相关知识</strong></p>
+<p>&#8195;&#8195;<a href="http://www.leoyanblog.com/post/2017/03/19.html">http://www.leoyanblog.com/post/2017/03/19.html</a></p>
+<p><strong>Android 之 ContentProvider (二) 示例代码</strong></p>
+<p>&#8195;&#8195;<a href="http://www.leoyanblog.com/post/2017/03/20.html">http://www.leoyanblog.com/post/2017/03/20.html</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2017/03/26.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Leo Yan">
+      <meta itemprop="description" content="离经不叛道，特立不独行。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeoYan Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/post/2017/03/26.html" class="post-title-link" itemprop="url">小功能之手机号验证的正则表达式</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-03-26 10:00:00" itemprop="dateCreated datePublished" datetime="2017-03-26T10:00:00+08:00">2017-03-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-04-26 17:15:58" itemprop="dateModified" datetime="2017-04-26T17:15:58+08:00">2017-04-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/Java/%E5%B0%8F%E5%8A%9F%E8%83%BD/" itemprop="url" rel="index"><span itemprop="name">小功能</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>转载请注明出处：<a href="http://www.leoyanblog.com">www.leoyanblog.com</a></p>
+<p>本文出自 LeoYan 的博客</p>
+<p>本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。</p>
+</blockquote>
+<h2 id="手机号验证的正则表达式"><a href="#手机号验证的正则表达式" class="headerlink" title="手机号验证的正则表达式"></a>手机号验证的正则表达式</h2><p>1、手机号开头集合</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">176</span>，<span class="number">177</span>，<span class="number">178</span>，</span><br><span class="line"><span class="number">180</span>，<span class="number">181</span>，<span class="number">182</span>，<span class="number">183</span>，<span class="number">184</span>，<span class="number">185</span>，<span class="number">186</span>，<span class="number">187</span>，<span class="number">188</span>，<span class="number">189</span>。  </span><br><span class="line"><span class="number">145</span>，<span class="number">147</span>   </span><br><span class="line"><span class="number">130</span>，<span class="number">131</span>，<span class="number">132</span>，<span class="number">133</span>，<span class="number">134</span>，<span class="number">135</span>，<span class="number">136</span>，<span class="number">137</span>, <span class="number">138</span>，<span class="number">139</span>  </span><br><span class="line"><span class="number">150</span>，<span class="number">151</span>, <span class="number">152</span>，<span class="number">153</span>，<span class="number">155</span>，<span class="number">156</span>，<span class="number">157</span>，<span class="number">158</span>，<span class="number">159</span>，</span><br></pre></td></tr></table></figure>
+
+<p>2、正则表达式</p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">boolean</span> isChinaPhoneLegal(<span class="keyword">String</span> <span class="built_in">str</span>) <span class="keyword">throws</span> PatternSyntaxException &#123;  </span><br><span class="line">    <span class="keyword">String</span> regExp = <span class="string">"^((13[0-9])|(15[^4])|(18[0-9])|(17[0-8])|(147,145))\\d&#123;8&#125;$"</span>;  </span><br><span class="line">    Pattern p = Pattern.compile(regExp);  </span><br><span class="line">    Matcher m = p.matcher(<span class="built_in">str</span>);  </span><br><span class="line">    <span class="keyword">return</span> m.matches();  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>13开头的后面跟0-9的任意8位数；</p>
+<p>15开头的后面跟除了4以外的0-9的任意8位数；</p>
+<p>18开头的后面跟0-9的任意8位数；</p>
+<p>17开头的后面跟0-8的任意8位数，或者17[^9]；</p>
+<p>147，145开头后面跟任意8位数；</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2017/03/20.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Leo Yan">
+      <meta itemprop="description" content="离经不叛道，特立不独行。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeoYan Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/post/2017/03/20.html" class="post-title-link" itemprop="url">Android 之 ContentProvider (二) 示例代码</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-03-20 10:00:00" itemprop="dateCreated datePublished" datetime="2017-03-20T10:00:00+08:00">2017-03-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-03-27 11:52:01" itemprop="dateModified" datetime="2017-03-27T11:52:01+08:00">2017-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">四大组件</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6/ContentProvider/" itemprop="url" rel="index"><span itemprop="name">ContentProvider</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote>
+<p>转载请注明出处：<a href="http://www.leoyanblog.com">www.leoyanblog.com</a></p>
+<p>本文出自 LeoYan 的博客</p>
+<p>本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。</p>
+</blockquote>
+<h2 id="示例说明"><a href="#示例说明" class="headerlink" title="示例说明"></a>示例说明</h2><p><img src="http://oddu03if7.bkt.clouddn.com/ContentProviderDemo_01.jpg" alt="ContentProviderDemo_01"></p>
+<p>&#8195;&#8195;在创建ContentProvider前，首先要实现底层的数据源，数据源包括数据库、文件系统或网络等，然后继承ContentProvider类中实现基本数据操作的接口函数。调用者不能直接调用ContentProvider的接口函数，需要通过ContentResolver对象，通过URI间接调用ContentProvider。 </p>
+<blockquote>
+<p>注：示例中所选的数据源是 SQLite。</p>
+</blockquote>
+<h2 id="Demo-结构"><a href="#Demo-结构" class="headerlink" title="Demo 结构"></a>Demo 结构</h2><p>&#8195;&#8195;Demo结构如下： </p>
+<p><img src="http://oddu03if7.bkt.clouddn.com/ContentProviderDemo_02.png" alt="ContentProviderDemo_02"></p>
+<p><img src="http://oddu03if7.bkt.clouddn.com/ContentProviderDemo_03.png" alt="ContentProviderDemo_03"></p>
+<h2 id="关键代码"><a href="#关键代码" class="headerlink" title="关键代码"></a>关键代码</h2><p>&#8195;&#8195;People.Java&#8195;(TestContentProvider 和 TestContentResolver 都有)</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">People</span> &#123;</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> MIME_DIR_PREFIX = <span class="string">"vnd.android.cursor.dir"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> MIME_ITEM_PREFIX = <span class="string">"vnd.android.cursor.item"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> MIME_ITEM = <span class="string">"vnd.leo.people"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> MIME_TYPE_SINGLE = MIME_ITEM_PREFIX + <span class="string">"/"</span> + MIME_ITEM;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> MIME_TYPE_MULTIPLE = MIME_DIR_PREFIX + <span class="string">"/"</span> + MIME_ITEM;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> AUTHORITY = <span class="string">"com.leo.peopleprovider"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> PATH_SINGLE = <span class="string">"people/#"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> PATH_MULTIPLE = <span class="string">"people"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> CONTENT_URI_STRING = <span class="string">"content://"</span> + AUTHORITY + <span class="string">"/"</span> + PATH_MULTIPLE;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Uri CONTENT_URI = Uri.parse(CONTENT_URI_STRING);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> KEY_ID = <span class="string">"_id"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> KEY_NAME = <span class="string">"name"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> KEY_AGE = <span class="string">"age"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> KEY_HEIGHT = <span class="string">"height"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&#8195;&#8195;DBOpenHelper.java&#8195;(TestContentProvider 中)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DBOpenHelper</span> <span class="keyword">extends</span> <span class="title">SQLiteOpenHelper</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DB_NAME = <span class="string">"people.db"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DB_TABLE = <span class="string">"peopleinfo"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DB_VERSION = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String DB_CREATE = <span class="string">"create table "</span> +</span><br><span class="line">            DB_TABLE + <span class="string">"("</span> + People.KEY_ID + <span class="string">" integer primary key autoincrement, "</span> +</span><br><span class="line">            People.KEY_NAME + <span class="string">" text not null, "</span> + People.KEY_AGE + <span class="string">" integer, "</span> +</span><br><span class="line">            People.KEY_HEIGHT + <span class="string">" float);"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DBOpenHelper</span><span class="params">(Context context, String name, SQLiteDatabase.CursorFactory factory, <span class="keyword">int</span> version)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, name, factory, version);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(SQLiteDatabase db)</span> </span>&#123;</span><br><span class="line">        db.execSQL(DB_CREATE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onUpgrade</span><span class="params">(SQLiteDatabase db, <span class="keyword">int</span> oldVersion, <span class="keyword">int</span> newVersion)</span> </span>&#123;</span><br><span class="line">        db.execSQL(<span class="string">"DROP TABLE IF EXISTS "</span> + DB_TABLE);</span><br><span class="line">        onCreate(db);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&#8195;&#8195;PeopleProvider.java&#8195;(TestContentProvider 中)</p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> class PeopleProvider extends ContentProvider &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> SQLiteDatabase db;</span><br><span class="line">    <span class="keyword">private</span> DBOpenHelper dbOpenHelper;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="built_in">int</span> MULTIPLE_PEOPLE = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="built_in">int</span> SINGLE_PEOPLE = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> UriMatcher uriMatcher;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        uriMatcher = <span class="keyword">new</span> UriMatcher(UriMatcher.NO_MATCH);</span><br><span class="line">        uriMatcher.addURI(People.AUTHORITY, People.PATH_MULTIPLE, MULTIPLE_PEOPLE);</span><br><span class="line">        uriMatcher.addURI(People.AUTHORITY, People.PATH_SINGLE, SINGLE_PEOPLE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">boolean</span> onCreate() &#123;</span><br><span class="line">        Context context = getContext();</span><br><span class="line">        dbOpenHelper = <span class="keyword">new</span> DBOpenHelper(context, DBOpenHelper.DB_NAME, <span class="keyword">null</span>, DBOpenHelper.DB_VERSION);</span><br><span class="line">        db = dbOpenHelper.getWritableDatabase();</span><br><span class="line">        <span class="keyword">if</span> (db == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Nullable</span><br><span class="line">    @Override</span><br><span class="line">    <span class="keyword">public</span> Cursor query(Uri uri, <span class="keyword">String</span>[] projection, <span class="keyword">String</span> selection, <span class="keyword">String</span>[] selectionArgs, <span class="keyword">String</span> sortOrder) &#123;</span><br><span class="line">        SQLiteQueryBuilder qb = <span class="keyword">new</span> SQLiteQueryBuilder();</span><br><span class="line">        qb.setTables(DBOpenHelper.DB_TABLE);</span><br><span class="line">        <span class="keyword">switch</span> (uriMatcher.<span class="built_in">match</span>(uri)) &#123;</span><br><span class="line">            <span class="keyword">case</span> SINGLE_PEOPLE:</span><br><span class="line">                <span class="comment">// 单条数据的处理</span></span><br><span class="line">                qb.appendWhere(People.KEY_ID + <span class="string">"="</span> + uri.getPathSegments().<span class="built_in">get</span>(<span class="number">1</span>));</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Cursor <span class="built_in">cursor</span> = qb.query(db,</span><br><span class="line">                projection,</span><br><span class="line">                selection,</span><br><span class="line">                selectionArgs,</span><br><span class="line">                <span class="keyword">null</span>,</span><br><span class="line">                <span class="keyword">null</span>,</span><br><span class="line">                sortOrder);</span><br><span class="line">        <span class="built_in">cursor</span>.setNotificationUri(getContext().getContentResolver(), uri);</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">cursor</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Nullable</span><br><span class="line">    @Override</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">String</span> getType(Uri uri) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (uriMatcher.<span class="built_in">match</span>(uri)) &#123;</span><br><span class="line">            <span class="keyword">case</span> MULTIPLE_PEOPLE:</span><br><span class="line">                <span class="comment">// 多条数据的处理</span></span><br><span class="line">                <span class="keyword">return</span> People.MIME_TYPE_MULTIPLE;</span><br><span class="line">            <span class="keyword">case</span> SINGLE_PEOPLE:</span><br><span class="line">                <span class="comment">// 单条数据的处理</span></span><br><span class="line">                <span class="keyword">return</span> People.MIME_TYPE_SINGLE;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Unkown uro:"</span> + uri);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Nullable</span><br><span class="line">    @Override</span><br><span class="line">    <span class="keyword">public</span> Uri insert(Uri uri, ContentValues values) &#123;</span><br><span class="line">        <span class="keyword">long</span> id = db.insert(DBOpenHelper.DB_TABLE, <span class="keyword">null</span>, values);</span><br><span class="line">        <span class="keyword">if</span> (id &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            Uri newUri = ContentUris.withAppendedId(People.CONTENT_URI, id);</span><br><span class="line">            getContext().getContentResolver().notifyChange(newUri, <span class="keyword">null</span>);</span><br><span class="line">            <span class="keyword">return</span> newUri;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> SQLException(<span class="string">"failed to insert row into "</span> + uri);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> delete(Uri uri, <span class="keyword">String</span> selection, <span class="keyword">String</span>[] selectionArgs) &#123;</span><br><span class="line">        <span class="built_in">int</span> count = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">switch</span> (uriMatcher.<span class="built_in">match</span>(uri)) &#123;</span><br><span class="line">            <span class="keyword">case</span> MULTIPLE_PEOPLE:</span><br><span class="line">                <span class="comment">// 多条数据的处理</span></span><br><span class="line">                count = db.delete(DBOpenHelper.DB_TABLE, selection, selectionArgs);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> SINGLE_PEOPLE:</span><br><span class="line">                <span class="comment">// 单条数据的处理</span></span><br><span class="line">                <span class="keyword">String</span> segment = uri.getPathSegments().<span class="built_in">get</span>(<span class="number">1</span>);</span><br><span class="line">                count = db.delete(DBOpenHelper.DB_TABLE, People.KEY_ID + <span class="string">"="</span> + segment, selectionArgs);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Unsupported URI:"</span> + uri);</span><br><span class="line">        &#125;</span><br><span class="line">        getContext().getContentResolver().notifyChange(uri, <span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">return</span> count;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> update(Uri uri, ContentValues values, <span class="keyword">String</span> selection, <span class="keyword">String</span>[] selectionArgs) &#123;</span><br><span class="line">        <span class="built_in">int</span> count;</span><br><span class="line">        <span class="keyword">switch</span> (uriMatcher.<span class="built_in">match</span>(uri)) &#123;</span><br><span class="line">            <span class="keyword">case</span> MULTIPLE_PEOPLE:</span><br><span class="line">                <span class="comment">// 多条数据的处理</span></span><br><span class="line">                count = db.update(DBOpenHelper.DB_TABLE, values, selection, selectionArgs);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> SINGLE_PEOPLE:</span><br><span class="line">                <span class="comment">// 单条数据的处理</span></span><br><span class="line">                <span class="keyword">String</span> segment = uri.getPathSegments().<span class="built_in">get</span>(<span class="number">1</span>);</span><br><span class="line">                count = db.update(DBOpenHelper.DB_TABLE, values, People.KEY_ID + <span class="string">"="</span> + segment, selectionArgs);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Unknow URI: "</span> + uri);</span><br><span class="line">        &#125;</span><br><span class="line">        getContext().getContentResolver().notifyChange(uri, <span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">return</span> count;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&#8195;&#8195;AndroidManifest.xml&#8195;(TestContentProvider 中)</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">package</span>=<span class="string">"com.leo.testcontentprovider"</span> &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">application</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:allowBackup</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:icon</span>=<span class="string">"@mipmap/ic_launcher"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:label</span>=<span class="string">"@string/app_name"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:roundIcon</span>=<span class="string">"@mipmap/ic_launcher_round"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:supportsRtl</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:theme</span>=<span class="string">"@style/AppTheme"</span> &gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".MainActivity"</span> &gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.intent.action.MAIN"</span> /&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">"android.intent.category.LAUNCHER"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">provider</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:authorities</span>=<span class="string">"com.leo.peopleprovider"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:name</span>=<span class="string">".PeopleProvider"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:exported</span>=<span class="string">"true"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">application</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#8195;&#8195;MainActivity.java&#8195;(TestContentResolver 中)</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="title">extends</span> <span class="title">AppCompatActivity</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        resolver = <span class="keyword">this</span>.getContentResolver();</span><br><span class="line">        initView();</span><br><span class="line">        initEvent();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initEvent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        addBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> onClick(View v) &#123;</span><br><span class="line">                ContentValues values = <span class="keyword">new</span> ContentValues();</span><br><span class="line">                values.<span class="built_in">put</span>(People.KEY_NAME, nameEt.getText().toString());</span><br><span class="line">                values.<span class="built_in">put</span>(People.KEY_AGE, Integer.<span class="built_in">parseInt</span>(ageEt.getText().toString()));</span><br><span class="line">                values.<span class="built_in">put</span>(People.KEY_HEIGHT, Float.<span class="built_in">parseFloat</span>(heightEt.getText().toString()));</span><br><span class="line">                Uri newUri = resolver.insert(People.CONTENT_URI, values);</span><br><span class="line">                labelTv.setText(<span class="string">"添加成功，URI:"</span> + newUri);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        queryBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> onClick(View v) &#123;</span><br><span class="line">                Uri uri = Uri.parse(People.CONTENT_URI_STRING + <span class="string">"/"</span> + idEt.getText().toString());</span><br><span class="line">                Cursor <span class="built_in">cursor</span> = resolver.query(uri,</span><br><span class="line">                        <span class="keyword">new</span> <span class="keyword">String</span>[]&#123;People.KEY_ID, People.KEY_NAME, People.KEY_AGE, People.KEY_HEIGHT&#125;,</span><br><span class="line">                        null, null, null);</span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">cursor</span> == null) &#123;</span><br><span class="line">                    labelTv.setText(<span class="string">"数据库中没有数据"</span>);</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                labelTv.setText(<span class="string">"数据库："</span> + <span class="keyword">String</span>.valueOf(<span class="built_in">cursor</span>.getCount()) + <span class="string">"条记录"</span>);</span><br><span class="line">                <span class="keyword">String</span> msg = <span class="string">""</span>;</span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">cursor</span>.moveToFirst()) &#123;</span><br><span class="line">                    <span class="keyword">do</span> &#123;</span><br><span class="line">                        msg += <span class="string">"ID: "</span> + <span class="built_in">cursor</span>.getString(<span class="built_in">cursor</span>.getColumnIndex(People.KEY_ID)) + <span class="string">","</span>;</span><br><span class="line">                        msg += <span class="string">"姓名: "</span> + <span class="built_in">cursor</span>.getString(<span class="built_in">cursor</span>.getColumnIndex(People.KEY_NAME)) + <span class="string">","</span>;</span><br><span class="line">                        msg += <span class="string">"年龄: "</span> + <span class="built_in">cursor</span>.getInt(<span class="built_in">cursor</span>.getColumnIndex(People.KEY_AGE)) + <span class="string">","</span>;</span><br><span class="line">                        msg += <span class="string">"身高: "</span> + <span class="built_in">cursor</span>.getFloat(<span class="built_in">cursor</span>.getColumnIndex(People.KEY_HEIGHT)) + <span class="string">"\n"</span>;</span><br><span class="line">                    &#125; <span class="keyword">while</span> (<span class="built_in">cursor</span>.moveToNext());</span><br><span class="line">                &#125;</span><br><span class="line">                displayTv.setText(msg);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        queryAllBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> onClick(View v) &#123;</span><br><span class="line">                Cursor <span class="built_in">cursor</span> = resolver.query(People.CONTENT_URI,</span><br><span class="line">                        <span class="keyword">new</span> <span class="keyword">String</span>[]&#123;People.KEY_ID, People.KEY_NAME, People.KEY_AGE, People.KEY_HEIGHT&#125;,</span><br><span class="line">                        null, null, null);</span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">cursor</span> == null) &#123;</span><br><span class="line">                    labelTv.setText(<span class="string">"数据库中没有数据"</span>);</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                labelTv.setText(<span class="string">"数据库："</span> + <span class="keyword">String</span>.valueOf(<span class="built_in">cursor</span>.getCount()) + <span class="string">"条记录"</span>);</span><br><span class="line">                <span class="keyword">String</span> msg = <span class="string">""</span>;</span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">cursor</span>.moveToFirst()) &#123;</span><br><span class="line">                    <span class="keyword">do</span> &#123;</span><br><span class="line">                        msg += <span class="string">"ID: "</span> + <span class="built_in">cursor</span>.getString(<span class="built_in">cursor</span>.getColumnIndex(People.KEY_ID)) + <span class="string">","</span>;</span><br><span class="line">                        msg += <span class="string">"姓名: "</span> + <span class="built_in">cursor</span>.getString(<span class="built_in">cursor</span>.getColumnIndex(People.KEY_NAME)) + <span class="string">","</span>;</span><br><span class="line">                        msg += <span class="string">"年龄: "</span> + <span class="built_in">cursor</span>.getInt(<span class="built_in">cursor</span>.getColumnIndex(People.KEY_AGE)) + <span class="string">","</span>;</span><br><span class="line">                        msg += <span class="string">"身高: "</span> + <span class="built_in">cursor</span>.getFloat(<span class="built_in">cursor</span>.getColumnIndex(People.KEY_HEIGHT)) + <span class="string">"\n"</span>;</span><br><span class="line">                    &#125; <span class="keyword">while</span> (<span class="built_in">cursor</span>.moveToNext());</span><br><span class="line">                &#125;</span><br><span class="line">                displayTv.setText(msg);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        deleteBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> onClick(View v) &#123;</span><br><span class="line">                Uri uri = Uri.parse(People.CONTENT_URI_STRING + <span class="string">"/"</span> + idEt.getText().toString());</span><br><span class="line">                <span class="keyword">int</span> count = resolver.<span class="keyword">delete</span>(uri, null, null);</span><br><span class="line">                <span class="keyword">String</span> msg = count + <span class="string">" 条数据被删除"</span>;</span><br><span class="line">                labelTv.setText(msg);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        deleteAllBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> onClick(View v) &#123;</span><br><span class="line">                resolver.<span class="keyword">delete</span>(People.CONTENT_URI, null, null);</span><br><span class="line">                <span class="keyword">String</span> msg = <span class="string">"数据全部删除"</span>;</span><br><span class="line">                labelTv.setText(msg);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        updateBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> onClick(View v) &#123;</span><br><span class="line">                ContentValues values = <span class="keyword">new</span> ContentValues();</span><br><span class="line">                values.<span class="built_in">put</span>(People.KEY_NAME, nameEt.getText().toString());</span><br><span class="line">                values.<span class="built_in">put</span>(People.KEY_AGE, Integer.<span class="built_in">parseInt</span>(ageEt.getText().toString()));</span><br><span class="line">                values.<span class="built_in">put</span>(People.KEY_HEIGHT, Float.<span class="built_in">parseFloat</span>(heightEt.getText().toString()));</span><br><span class="line">                Uri uri = Uri.parse(People.CONTENT_URI_STRING + <span class="string">"/"</span> + idEt.getText().toString());</span><br><span class="line">                <span class="keyword">int</span> result = resolver.update(uri, values, null, null);</span><br><span class="line">                <span class="keyword">String</span> msg = <span class="string">"更新ID为"</span> + idEt.getText().toString() + <span class="string">"的数据"</span> + (result &gt; <span class="number">0</span> ? <span class="string">"成功"</span> : <span class="string">"失败"</span>);</span><br><span class="line">                labelTv.setText(msg);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Demo-下载"><a href="#Demo-下载" class="headerlink" title="Demo 下载"></a>Demo 下载</h2><p>&#8195;&#8195;Demo 下载地址：<a href="http://download.csdn.net/download/leoyan_blog/9783601" target="_blank" rel="noopener">http://download.csdn.net/download/leoyan_blog/9783601</a></p>
 
       
     </div>
@@ -197,6 +1744,9 @@
 
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
 
 
 
@@ -239,10 +1789,10 @@
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
-          المحتويات
+          文章目录
         </li>
         <li class="sidebar-nav-overview">
-          عام
+          站点概览
         </li>
       </ul>
 
@@ -260,9 +1810,19 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives">
-          <span class="site-state-item-count">1</span>
-          <span class="site-state-item-name">المقالات</span>
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
@@ -287,14 +1847,14 @@
 
 <div class="copyright">
   
-  &copy; 
+  &copy; 2016 – 
   <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">Leo Yan</span>
 </div>
-  <div class="powered-by">تطبيق الموقع <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
 
         

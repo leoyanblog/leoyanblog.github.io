@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.leoyanblog.com","root":"/","scheme":"Muse","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="转载请注明出处：www.leoyanblog.com 本文出自 LeoYan 的博客 本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。  背景当 APK 安装的时候，userId 这个标志就会产生。APK 在设备上的整个生命周期中，这个 ID 不再改变。同一个应用包在不同设备上可能有不同的 userId，重要的是在给定的设备上，每个应用包有自己独立的 u">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 如何用 sharedUserId 做数据共享">
+<meta property="og:url" content="http://www.leoyanblog.com/post/2017/05/07.html">
+<meta property="og:site_name" content="LeoYan Blog">
+<meta property="og:description" content="转载请注明出处：www.leoyanblog.com 本文出自 LeoYan 的博客 本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。  背景当 APK 安装的时候，userId 这个标志就会产生。APK 在设备上的整个生命周期中，这个 ID 不再改变。同一个应用包在不同设备上可能有不同的 userId，重要的是在给定的设备上，每个应用包有自己独立的 u">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-05-07T02:00:00.000Z">
+<meta property="article:modified_time" content="2017-07-04T07:04:55.087Z">
+<meta property="article:author" content="Leo Yan">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="清单文件">
+<meta property="article:tag" content="Manifest">
+<meta property="article:tag" content="sharedUserId">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://www.leoyanblog.com/post/2017/05/07.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Android 如何用 sharedUserId 做数据共享 | LeoYan Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">LeoYan Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术分享，生活记录。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2017/05/07.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Leo Yan">
+      <meta itemprop="description" content="离经不叛道，特立不独行。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeoYan Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android 如何用 sharedUserId 做数据共享
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-05-07 10:00:00" itemprop="dateCreated datePublished" datetime="2017-05-07T10:00:00+08:00">2017-05-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-07-04 15:04:55" itemprop="dateModified" datetime="2017-07-04T15:04:55+08:00">2017-07-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E6%95%B0%E6%8D%AE%E5%85%B1%E4%BA%AB/" itemprop="url" rel="index"><span itemprop="name">数据共享</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>转载请注明出处：<a href="http://www.leoyanblog.com">www.leoyanblog.com</a></p>
+<p>本文出自 LeoYan 的博客</p>
+<p>本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。</p>
+</blockquote>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>当 APK 安装的时候，userId 这个标志就会产生。APK 在设备上的整个生命周期中，这个 ID 不再改变。同一个应用包在不同设备上可能有不同的 userId，重要的是在给定的设备上，每个应用包有自己独立的 userId。</p>
+<h3 id="userId的特点"><a href="#userId的特点" class="headerlink" title="userId的特点"></a>userId的特点</h3><ol>
+<li><p>作为 APK 身份的标识</p>
+</li>
+<li><p>userId 对应一个 Linux 用户，所以不同 APK (用户)间互相访问数据默认是禁止的。</p>
+</li>
+</ol>
+<p>那么不同 APK 之间想要互相访问数据应该怎么办呢？</p>
+<h3 id="数据共享"><a href="#数据共享" class="headerlink" title="数据共享"></a>数据共享</h3><p>Android 为我们提供了两种数据互访的方法：</p>
+<ol>
+<li>使用 Share Preference / Content Provider</li>
+</ol>
+<p>APK通过指定接口和数据供其它APK读取，开发者需要实现接口和指定 share 的数据。</p>
+<ol start="2">
+<li>在配置文件 manifest 中配置相同的 UserId</li>
+</ol>
+<p>通过共享 userId，拥有相同 userId 的用户可以配置成运行在同一进程当中，因此默认就是可以互相访问任意数据的。</p>
+<p>也可以配置为不同进程当中，彼此之间就像访问自己的数据一样访问彼此的数据库和文件。</p>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>应用1：com.leoyanblog.sqlite</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;manifestxmlns:<span class="attribute">android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attribute">package</span>=<span class="string">"com.leoyanblog.sqlite"</span></span><br><span class="line">    android:<span class="attribute">versionCode</span>=<span class="string">"1"</span></span><br><span class="line">    android:<span class="attribute">versionName</span>=<span class="string">"1.0"</span></span><br><span class="line">    android:<span class="attribute">sharedUserId</span>=<span class="string">"leoyanblog.com"</span></span><br><span class="line">    &gt;</span><br></pre></td></tr></table></figure>
+
+<p>应用2：com.leoyanblog.activity</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;manifestxmlns:<span class="attribute">android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attribute">package</span>=<span class="string">"com.leoyanblog.activity"</span></span><br><span class="line">    android:<span class="attribute">versionCode</span>=<span class="string">"1"</span></span><br><span class="line">    android:<span class="attribute">versionName</span>=<span class="string">"1.0"</span></span><br><span class="line">    android:<span class="attribute">sharedUserId</span>=<span class="string">"leoyanblog.com"</span></span><br><span class="line">    &gt;</span><br></pre></td></tr></table></figure>
+
+<p>这两个应用的 userId 相同，都为”leoyanblog.com”，因此两个应用共享 userId，如果应用1想访问应用2的数据怎么办呢？</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content content = this.create<span class="constructor">PackageContent(“<span class="params">com</span>.<span class="params">leoyanblog</span>.<span class="params">activity</span>”, Content.CONTENT_IGNORE_SECURITY)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这样通过 content 可以获取到应用2中的资源，包括：数据库，preference，资源文件等。</p>
+<blockquote>
+<p>注意：<br>基于安全考虑，两个　package　需要有相同的签名。否则如果没有验证，应用程序一旦设置了 sharedUserId，当程序被破解，其它应用也可以访问我们的数据。数据不安全设置共享也就没有多大意义了。</p>
+</blockquote>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>如果想要不同的 APK 之间，通过 sharedUserId 共享数据需要满足以下条件：</p>
+<ol>
+<li><p>APK 的签名必须相同</p>
+</li>
+<li><p>android:shareUserId 的值必须相同</p>
+</li>
+<li><p>如果想要运行在同一个进行当中，必须设置 android:process 的值相同。</p>
+</li>
+</ol>
+<p>application 设置应用程序的全部组件都运行在某个线程中</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;application </span><br><span class="line">    android:<span class="attribute">allowBackup</span>=<span class="string">"true"</span></span><br><span class="line">    android:<span class="attribute">icon</span>=<span class="string">"@drawable/ic_launcher"</span></span><br><span class="line">    android:<span class="attribute">label</span>=<span class="string">"@string/app_name"</span></span><br><span class="line">    android:<span class="attribute">theme</span>=<span class="string">"@style/AppTheme"</span></span><br><span class="line">    android:<span class="attribute">process</span>=<span class="string">"leoyan.com"</span>&gt;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android/" rel="tag"># Android</a>
+              <a href="/tags/%E6%B8%85%E5%8D%95%E6%96%87%E4%BB%B6/" rel="tag"># 清单文件</a>
+              <a href="/tags/Manifest/" rel="tag"># Manifest</a>
+              <a href="/tags/sharedUserId/" rel="tag"># sharedUserId</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/post/2017/04/30.html" rel="prev" title="Android 清单文件之 Manifest 标签详解">
+      <i class="fa fa-chevron-left"></i> Android 清单文件之 Manifest 标签详解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/post/2017/05/14.html" rel="next" title="WannaCry 勒索病毒新变种的防护">
+      WannaCry 勒索病毒新变种的防护 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#userId的特点"><span class="nav-number">2.</span> <span class="nav-text">userId的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据共享"><span class="nav-number">3.</span> <span class="nav-text">数据共享</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子"><span class="nav-number">4.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Leo Yan</p>
+  <div class="site-description" itemprop="description">离经不叛道，特立不独行。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo Yan</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

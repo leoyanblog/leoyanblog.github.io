@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.leoyanblog.com","root":"/","scheme":"Muse","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="转载请注明出处：www.leoyanblog.com 本文出自 LeoYan 的博客 本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。  示例说明 &amp;#8195;&amp;#8195;在创建ContentProvider前，首先要实现底层的数据源，数据源包括数据库、文件系统或网络等，然后继承ContentProvider类中实现基本数据操作的接口函数。调用者不能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 之 ContentProvider (二) 示例代码">
+<meta property="og:url" content="http://www.leoyanblog.com/post/2017/03/20.html">
+<meta property="og:site_name" content="LeoYan Blog">
+<meta property="og:description" content="转载请注明出处：www.leoyanblog.com 本文出自 LeoYan 的博客 本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。  示例说明 &amp;#8195;&amp;#8195;在创建ContentProvider前，首先要实现底层的数据源，数据源包括数据库、文件系统或网络等，然后继承ContentProvider类中实现基本数据操作的接口函数。调用者不能">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://oddu03if7.bkt.clouddn.com/ContentProviderDemo_01.jpg">
+<meta property="og:image" content="http://oddu03if7.bkt.clouddn.com/ContentProviderDemo_02.png">
+<meta property="og:image" content="http://oddu03if7.bkt.clouddn.com/ContentProviderDemo_03.png">
+<meta property="article:published_time" content="2017-03-20T02:00:00.000Z">
+<meta property="article:modified_time" content="2017-03-27T03:52:01.303Z">
+<meta property="article:author" content="Leo Yan">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="ContentProvider">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://oddu03if7.bkt.clouddn.com/ContentProviderDemo_01.jpg">
+
+<link rel="canonical" href="http://www.leoyanblog.com/post/2017/03/20.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Android 之 ContentProvider (二) 示例代码 | LeoYan Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">LeoYan Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术分享，生活记录。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2017/03/20.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Leo Yan">
+      <meta itemprop="description" content="离经不叛道，特立不独行。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeoYan Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android 之 ContentProvider (二) 示例代码
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-03-20 10:00:00" itemprop="dateCreated datePublished" datetime="2017-03-20T10:00:00+08:00">2017-03-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-03-27 11:52:01" itemprop="dateModified" datetime="2017-03-27T11:52:01+08:00">2017-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">四大组件</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6/ContentProvider/" itemprop="url" rel="index"><span itemprop="name">ContentProvider</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>转载请注明出处：<a href="http://www.leoyanblog.com">www.leoyanblog.com</a></p>
+<p>本文出自 LeoYan 的博客</p>
+<p>本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。</p>
+</blockquote>
+<h2 id="示例说明"><a href="#示例说明" class="headerlink" title="示例说明"></a>示例说明</h2><p><img src="http://oddu03if7.bkt.clouddn.com/ContentProviderDemo_01.jpg" alt="ContentProviderDemo_01"></p>
+<p>&#8195;&#8195;在创建ContentProvider前，首先要实现底层的数据源，数据源包括数据库、文件系统或网络等，然后继承ContentProvider类中实现基本数据操作的接口函数。调用者不能直接调用ContentProvider的接口函数，需要通过ContentResolver对象，通过URI间接调用ContentProvider。 </p>
+<blockquote>
+<p>注：示例中所选的数据源是 SQLite。</p>
+</blockquote>
+<h2 id="Demo-结构"><a href="#Demo-结构" class="headerlink" title="Demo 结构"></a>Demo 结构</h2><p>&#8195;&#8195;Demo结构如下： </p>
+<p><img src="http://oddu03if7.bkt.clouddn.com/ContentProviderDemo_02.png" alt="ContentProviderDemo_02"></p>
+<p><img src="http://oddu03if7.bkt.clouddn.com/ContentProviderDemo_03.png" alt="ContentProviderDemo_03"></p>
+<h2 id="关键代码"><a href="#关键代码" class="headerlink" title="关键代码"></a>关键代码</h2><p>&#8195;&#8195;People.Java&#8195;(TestContentProvider 和 TestContentResolver 都有)</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">People</span> &#123;</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> MIME_DIR_PREFIX = <span class="string">"vnd.android.cursor.dir"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> MIME_ITEM_PREFIX = <span class="string">"vnd.android.cursor.item"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> MIME_ITEM = <span class="string">"vnd.leo.people"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> MIME_TYPE_SINGLE = MIME_ITEM_PREFIX + <span class="string">"/"</span> + MIME_ITEM;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> MIME_TYPE_MULTIPLE = MIME_DIR_PREFIX + <span class="string">"/"</span> + MIME_ITEM;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> AUTHORITY = <span class="string">"com.leo.peopleprovider"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> PATH_SINGLE = <span class="string">"people/#"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> PATH_MULTIPLE = <span class="string">"people"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> CONTENT_URI_STRING = <span class="string">"content://"</span> + AUTHORITY + <span class="string">"/"</span> + PATH_MULTIPLE;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Uri CONTENT_URI = Uri.parse(CONTENT_URI_STRING);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> KEY_ID = <span class="string">"_id"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> KEY_NAME = <span class="string">"name"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> KEY_AGE = <span class="string">"age"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">String</span> KEY_HEIGHT = <span class="string">"height"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&#8195;&#8195;DBOpenHelper.java&#8195;(TestContentProvider 中)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DBOpenHelper</span> <span class="keyword">extends</span> <span class="title">SQLiteOpenHelper</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DB_NAME = <span class="string">"people.db"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DB_TABLE = <span class="string">"peopleinfo"</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DB_VERSION = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String DB_CREATE = <span class="string">"create table "</span> +</span><br><span class="line">            DB_TABLE + <span class="string">"("</span> + People.KEY_ID + <span class="string">" integer primary key autoincrement, "</span> +</span><br><span class="line">            People.KEY_NAME + <span class="string">" text not null, "</span> + People.KEY_AGE + <span class="string">" integer, "</span> +</span><br><span class="line">            People.KEY_HEIGHT + <span class="string">" float);"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DBOpenHelper</span><span class="params">(Context context, String name, SQLiteDatabase.CursorFactory factory, <span class="keyword">int</span> version)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, name, factory, version);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(SQLiteDatabase db)</span> </span>&#123;</span><br><span class="line">        db.execSQL(DB_CREATE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onUpgrade</span><span class="params">(SQLiteDatabase db, <span class="keyword">int</span> oldVersion, <span class="keyword">int</span> newVersion)</span> </span>&#123;</span><br><span class="line">        db.execSQL(<span class="string">"DROP TABLE IF EXISTS "</span> + DB_TABLE);</span><br><span class="line">        onCreate(db);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&#8195;&#8195;PeopleProvider.java&#8195;(TestContentProvider 中)</p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> class PeopleProvider extends ContentProvider &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> SQLiteDatabase db;</span><br><span class="line">    <span class="keyword">private</span> DBOpenHelper dbOpenHelper;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="built_in">int</span> MULTIPLE_PEOPLE = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="built_in">int</span> SINGLE_PEOPLE = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> UriMatcher uriMatcher;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        uriMatcher = <span class="keyword">new</span> UriMatcher(UriMatcher.NO_MATCH);</span><br><span class="line">        uriMatcher.addURI(People.AUTHORITY, People.PATH_MULTIPLE, MULTIPLE_PEOPLE);</span><br><span class="line">        uriMatcher.addURI(People.AUTHORITY, People.PATH_SINGLE, SINGLE_PEOPLE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">boolean</span> onCreate() &#123;</span><br><span class="line">        Context context = getContext();</span><br><span class="line">        dbOpenHelper = <span class="keyword">new</span> DBOpenHelper(context, DBOpenHelper.DB_NAME, <span class="keyword">null</span>, DBOpenHelper.DB_VERSION);</span><br><span class="line">        db = dbOpenHelper.getWritableDatabase();</span><br><span class="line">        <span class="keyword">if</span> (db == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Nullable</span><br><span class="line">    @Override</span><br><span class="line">    <span class="keyword">public</span> Cursor query(Uri uri, <span class="keyword">String</span>[] projection, <span class="keyword">String</span> selection, <span class="keyword">String</span>[] selectionArgs, <span class="keyword">String</span> sortOrder) &#123;</span><br><span class="line">        SQLiteQueryBuilder qb = <span class="keyword">new</span> SQLiteQueryBuilder();</span><br><span class="line">        qb.setTables(DBOpenHelper.DB_TABLE);</span><br><span class="line">        <span class="keyword">switch</span> (uriMatcher.<span class="built_in">match</span>(uri)) &#123;</span><br><span class="line">            <span class="keyword">case</span> SINGLE_PEOPLE:</span><br><span class="line">                <span class="comment">// 单条数据的处理</span></span><br><span class="line">                qb.appendWhere(People.KEY_ID + <span class="string">"="</span> + uri.getPathSegments().<span class="built_in">get</span>(<span class="number">1</span>));</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Cursor <span class="built_in">cursor</span> = qb.query(db,</span><br><span class="line">                projection,</span><br><span class="line">                selection,</span><br><span class="line">                selectionArgs,</span><br><span class="line">                <span class="keyword">null</span>,</span><br><span class="line">                <span class="keyword">null</span>,</span><br><span class="line">                sortOrder);</span><br><span class="line">        <span class="built_in">cursor</span>.setNotificationUri(getContext().getContentResolver(), uri);</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">cursor</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Nullable</span><br><span class="line">    @Override</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">String</span> getType(Uri uri) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (uriMatcher.<span class="built_in">match</span>(uri)) &#123;</span><br><span class="line">            <span class="keyword">case</span> MULTIPLE_PEOPLE:</span><br><span class="line">                <span class="comment">// 多条数据的处理</span></span><br><span class="line">                <span class="keyword">return</span> People.MIME_TYPE_MULTIPLE;</span><br><span class="line">            <span class="keyword">case</span> SINGLE_PEOPLE:</span><br><span class="line">                <span class="comment">// 单条数据的处理</span></span><br><span class="line">                <span class="keyword">return</span> People.MIME_TYPE_SINGLE;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Unkown uro:"</span> + uri);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Nullable</span><br><span class="line">    @Override</span><br><span class="line">    <span class="keyword">public</span> Uri insert(Uri uri, ContentValues values) &#123;</span><br><span class="line">        <span class="keyword">long</span> id = db.insert(DBOpenHelper.DB_TABLE, <span class="keyword">null</span>, values);</span><br><span class="line">        <span class="keyword">if</span> (id &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            Uri newUri = ContentUris.withAppendedId(People.CONTENT_URI, id);</span><br><span class="line">            getContext().getContentResolver().notifyChange(newUri, <span class="keyword">null</span>);</span><br><span class="line">            <span class="keyword">return</span> newUri;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> SQLException(<span class="string">"failed to insert row into "</span> + uri);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> delete(Uri uri, <span class="keyword">String</span> selection, <span class="keyword">String</span>[] selectionArgs) &#123;</span><br><span class="line">        <span class="built_in">int</span> count = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">switch</span> (uriMatcher.<span class="built_in">match</span>(uri)) &#123;</span><br><span class="line">            <span class="keyword">case</span> MULTIPLE_PEOPLE:</span><br><span class="line">                <span class="comment">// 多条数据的处理</span></span><br><span class="line">                count = db.delete(DBOpenHelper.DB_TABLE, selection, selectionArgs);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> SINGLE_PEOPLE:</span><br><span class="line">                <span class="comment">// 单条数据的处理</span></span><br><span class="line">                <span class="keyword">String</span> segment = uri.getPathSegments().<span class="built_in">get</span>(<span class="number">1</span>);</span><br><span class="line">                count = db.delete(DBOpenHelper.DB_TABLE, People.KEY_ID + <span class="string">"="</span> + segment, selectionArgs);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Unsupported URI:"</span> + uri);</span><br><span class="line">        &#125;</span><br><span class="line">        getContext().getContentResolver().notifyChange(uri, <span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">return</span> count;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    <span class="keyword">public</span> <span class="built_in">int</span> update(Uri uri, ContentValues values, <span class="keyword">String</span> selection, <span class="keyword">String</span>[] selectionArgs) &#123;</span><br><span class="line">        <span class="built_in">int</span> count;</span><br><span class="line">        <span class="keyword">switch</span> (uriMatcher.<span class="built_in">match</span>(uri)) &#123;</span><br><span class="line">            <span class="keyword">case</span> MULTIPLE_PEOPLE:</span><br><span class="line">                <span class="comment">// 多条数据的处理</span></span><br><span class="line">                count = db.update(DBOpenHelper.DB_TABLE, values, selection, selectionArgs);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> SINGLE_PEOPLE:</span><br><span class="line">                <span class="comment">// 单条数据的处理</span></span><br><span class="line">                <span class="keyword">String</span> segment = uri.getPathSegments().<span class="built_in">get</span>(<span class="number">1</span>);</span><br><span class="line">                count = db.update(DBOpenHelper.DB_TABLE, values, People.KEY_ID + <span class="string">"="</span> + segment, selectionArgs);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Unknow URI: "</span> + uri);</span><br><span class="line">        &#125;</span><br><span class="line">        getContext().getContentResolver().notifyChange(uri, <span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">return</span> count;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&#8195;&#8195;AndroidManifest.xml&#8195;(TestContentProvider 中)</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">package</span>=<span class="string">"com.leo.testcontentprovider"</span> &gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">application</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:allowBackup</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:icon</span>=<span class="string">"@mipmap/ic_launcher"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:label</span>=<span class="string">"@string/app_name"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:roundIcon</span>=<span class="string">"@mipmap/ic_launcher_round"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:supportsRtl</span>=<span class="string">"true"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:theme</span>=<span class="string">"@style/AppTheme"</span> &gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".MainActivity"</span> &gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.intent.action.MAIN"</span> /&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">"android.intent.category.LAUNCHER"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">provider</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:authorities</span>=<span class="string">"com.leo.peopleprovider"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:name</span>=<span class="string">".PeopleProvider"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:exported</span>=<span class="string">"true"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">application</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>&#8195;&#8195;MainActivity.java&#8195;(TestContentResolver 中)</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="title">extends</span> <span class="title">AppCompatActivity</span> &#123;</span></span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        resolver = <span class="keyword">this</span>.getContentResolver();</span><br><span class="line">        initView();</span><br><span class="line">        initEvent();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initView</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initEvent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        addBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> onClick(View v) &#123;</span><br><span class="line">                ContentValues values = <span class="keyword">new</span> ContentValues();</span><br><span class="line">                values.<span class="built_in">put</span>(People.KEY_NAME, nameEt.getText().toString());</span><br><span class="line">                values.<span class="built_in">put</span>(People.KEY_AGE, Integer.<span class="built_in">parseInt</span>(ageEt.getText().toString()));</span><br><span class="line">                values.<span class="built_in">put</span>(People.KEY_HEIGHT, Float.<span class="built_in">parseFloat</span>(heightEt.getText().toString()));</span><br><span class="line">                Uri newUri = resolver.insert(People.CONTENT_URI, values);</span><br><span class="line">                labelTv.setText(<span class="string">"添加成功，URI:"</span> + newUri);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        queryBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> onClick(View v) &#123;</span><br><span class="line">                Uri uri = Uri.parse(People.CONTENT_URI_STRING + <span class="string">"/"</span> + idEt.getText().toString());</span><br><span class="line">                Cursor <span class="built_in">cursor</span> = resolver.query(uri,</span><br><span class="line">                        <span class="keyword">new</span> <span class="keyword">String</span>[]&#123;People.KEY_ID, People.KEY_NAME, People.KEY_AGE, People.KEY_HEIGHT&#125;,</span><br><span class="line">                        null, null, null);</span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">cursor</span> == null) &#123;</span><br><span class="line">                    labelTv.setText(<span class="string">"数据库中没有数据"</span>);</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                labelTv.setText(<span class="string">"数据库："</span> + <span class="keyword">String</span>.valueOf(<span class="built_in">cursor</span>.getCount()) + <span class="string">"条记录"</span>);</span><br><span class="line">                <span class="keyword">String</span> msg = <span class="string">""</span>;</span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">cursor</span>.moveToFirst()) &#123;</span><br><span class="line">                    <span class="keyword">do</span> &#123;</span><br><span class="line">                        msg += <span class="string">"ID: "</span> + <span class="built_in">cursor</span>.getString(<span class="built_in">cursor</span>.getColumnIndex(People.KEY_ID)) + <span class="string">","</span>;</span><br><span class="line">                        msg += <span class="string">"姓名: "</span> + <span class="built_in">cursor</span>.getString(<span class="built_in">cursor</span>.getColumnIndex(People.KEY_NAME)) + <span class="string">","</span>;</span><br><span class="line">                        msg += <span class="string">"年龄: "</span> + <span class="built_in">cursor</span>.getInt(<span class="built_in">cursor</span>.getColumnIndex(People.KEY_AGE)) + <span class="string">","</span>;</span><br><span class="line">                        msg += <span class="string">"身高: "</span> + <span class="built_in">cursor</span>.getFloat(<span class="built_in">cursor</span>.getColumnIndex(People.KEY_HEIGHT)) + <span class="string">"\n"</span>;</span><br><span class="line">                    &#125; <span class="keyword">while</span> (<span class="built_in">cursor</span>.moveToNext());</span><br><span class="line">                &#125;</span><br><span class="line">                displayTv.setText(msg);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        queryAllBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> onClick(View v) &#123;</span><br><span class="line">                Cursor <span class="built_in">cursor</span> = resolver.query(People.CONTENT_URI,</span><br><span class="line">                        <span class="keyword">new</span> <span class="keyword">String</span>[]&#123;People.KEY_ID, People.KEY_NAME, People.KEY_AGE, People.KEY_HEIGHT&#125;,</span><br><span class="line">                        null, null, null);</span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">cursor</span> == null) &#123;</span><br><span class="line">                    labelTv.setText(<span class="string">"数据库中没有数据"</span>);</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                labelTv.setText(<span class="string">"数据库："</span> + <span class="keyword">String</span>.valueOf(<span class="built_in">cursor</span>.getCount()) + <span class="string">"条记录"</span>);</span><br><span class="line">                <span class="keyword">String</span> msg = <span class="string">""</span>;</span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">cursor</span>.moveToFirst()) &#123;</span><br><span class="line">                    <span class="keyword">do</span> &#123;</span><br><span class="line">                        msg += <span class="string">"ID: "</span> + <span class="built_in">cursor</span>.getString(<span class="built_in">cursor</span>.getColumnIndex(People.KEY_ID)) + <span class="string">","</span>;</span><br><span class="line">                        msg += <span class="string">"姓名: "</span> + <span class="built_in">cursor</span>.getString(<span class="built_in">cursor</span>.getColumnIndex(People.KEY_NAME)) + <span class="string">","</span>;</span><br><span class="line">                        msg += <span class="string">"年龄: "</span> + <span class="built_in">cursor</span>.getInt(<span class="built_in">cursor</span>.getColumnIndex(People.KEY_AGE)) + <span class="string">","</span>;</span><br><span class="line">                        msg += <span class="string">"身高: "</span> + <span class="built_in">cursor</span>.getFloat(<span class="built_in">cursor</span>.getColumnIndex(People.KEY_HEIGHT)) + <span class="string">"\n"</span>;</span><br><span class="line">                    &#125; <span class="keyword">while</span> (<span class="built_in">cursor</span>.moveToNext());</span><br><span class="line">                &#125;</span><br><span class="line">                displayTv.setText(msg);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        deleteBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> onClick(View v) &#123;</span><br><span class="line">                Uri uri = Uri.parse(People.CONTENT_URI_STRING + <span class="string">"/"</span> + idEt.getText().toString());</span><br><span class="line">                <span class="keyword">int</span> count = resolver.<span class="keyword">delete</span>(uri, null, null);</span><br><span class="line">                <span class="keyword">String</span> msg = count + <span class="string">" 条数据被删除"</span>;</span><br><span class="line">                labelTv.setText(msg);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        deleteAllBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> onClick(View v) &#123;</span><br><span class="line">                resolver.<span class="keyword">delete</span>(People.CONTENT_URI, null, null);</span><br><span class="line">                <span class="keyword">String</span> msg = <span class="string">"数据全部删除"</span>;</span><br><span class="line">                labelTv.setText(msg);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        updateBtn.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> onClick(View v) &#123;</span><br><span class="line">                ContentValues values = <span class="keyword">new</span> ContentValues();</span><br><span class="line">                values.<span class="built_in">put</span>(People.KEY_NAME, nameEt.getText().toString());</span><br><span class="line">                values.<span class="built_in">put</span>(People.KEY_AGE, Integer.<span class="built_in">parseInt</span>(ageEt.getText().toString()));</span><br><span class="line">                values.<span class="built_in">put</span>(People.KEY_HEIGHT, Float.<span class="built_in">parseFloat</span>(heightEt.getText().toString()));</span><br><span class="line">                Uri uri = Uri.parse(People.CONTENT_URI_STRING + <span class="string">"/"</span> + idEt.getText().toString());</span><br><span class="line">                <span class="keyword">int</span> result = resolver.update(uri, values, null, null);</span><br><span class="line">                <span class="keyword">String</span> msg = <span class="string">"更新ID为"</span> + idEt.getText().toString() + <span class="string">"的数据"</span> + (result &gt; <span class="number">0</span> ? <span class="string">"成功"</span> : <span class="string">"失败"</span>);</span><br><span class="line">                labelTv.setText(msg);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Demo-下载"><a href="#Demo-下载" class="headerlink" title="Demo 下载"></a>Demo 下载</h2><p>&#8195;&#8195;Demo 下载地址：<a href="http://download.csdn.net/download/leoyan_blog/9783601" target="_blank" rel="noopener">http://download.csdn.net/download/leoyan_blog/9783601</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android/" rel="tag"># Android</a>
+              <a href="/tags/ContentProvider/" rel="tag"># ContentProvider</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/post/2017/03/19.html" rel="prev" title="Android 之 ContentProvider (一) 相关知识">
+      <i class="fa fa-chevron-left"></i> Android 之 ContentProvider (一) 相关知识
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/post/2017/03/26.html" rel="next" title="小功能之手机号验证的正则表达式">
+      小功能之手机号验证的正则表达式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#示例说明"><span class="nav-number">1.</span> <span class="nav-text">示例说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Demo-结构"><span class="nav-number">2.</span> <span class="nav-text">Demo 结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关键代码"><span class="nav-number">3.</span> <span class="nav-text">关键代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Demo-下载"><span class="nav-number">4.</span> <span class="nav-text">Demo 下载</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Leo Yan</p>
+  <div class="site-description" itemprop="description">离经不叛道，特立不独行。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo Yan</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

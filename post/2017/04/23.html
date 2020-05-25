@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.leoyanblog.com","root":"/","scheme":"Muse","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="转载请注明出处：www.leoyanblog.com 本文出自 LeoYan 的博客 本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。  一、前言AndroidManifest.xml 是每个Android程序中必须的文件，它位于整个项目的根目录。我们每天都在使用这个文件，往里面配置程序运行所必要的组件，权限，以及一些相关信息。但是对于这个文件，我们真正">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 清单文件AndroidManifest.xml最全详解">
+<meta property="og:url" content="http://www.leoyanblog.com/post/2017/04/23.html">
+<meta property="og:site_name" content="LeoYan Blog">
+<meta property="og:description" content="转载请注明出处：www.leoyanblog.com 本文出自 LeoYan 的博客 本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。  一、前言AndroidManifest.xml 是每个Android程序中必须的文件，它位于整个项目的根目录。我们每天都在使用这个文件，往里面配置程序运行所必要的组件，权限，以及一些相关信息。但是对于这个文件，我们真正">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-04-23T02:00:00.000Z">
+<meta property="article:modified_time" content="2017-07-04T07:25:45.253Z">
+<meta property="article:author" content="Leo Yan">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="清单文件">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://www.leoyanblog.com/post/2017/04/23.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Android 清单文件AndroidManifest.xml最全详解 | LeoYan Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">LeoYan Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术分享，生活记录。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2017/04/23.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Leo Yan">
+      <meta itemprop="description" content="离经不叛道，特立不独行。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeoYan Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android 清单文件AndroidManifest.xml最全详解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-04-23 10:00:00" itemprop="dateCreated datePublished" datetime="2017-04-23T10:00:00+08:00">2017-04-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-07-04 15:25:45" itemprop="dateModified" datetime="2017-07-04T15:25:45+08:00">2017-07-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E6%B8%85%E5%8D%95%E6%96%87%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">清单文件</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>转载请注明出处：<a href="http://www.leoyanblog.com">www.leoyanblog.com</a></p>
+<p>本文出自 LeoYan 的博客</p>
+<p>本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。</p>
+</blockquote>
+<h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>AndroidManifest.xml 是每个Android程序中必须的文件，它位于整个项目的根目录。我们每天都在使用这个文件，往里面配置程序运行所必要的组件，权限，以及一些相关信息。但是对于这个文件，我们真正又了解多少了，还是只是停留在只会简单的配置，而不明白其中的具体含义，以及为什么要这样设置？今天就让我们来详细的学习一下这个文件里各项参数的具体含义，因为它是整个应用的入口，所以有助于我们更加深入的理解Android。</p>
+<h2 id="二、概述"><a href="#二、概述" class="headerlink" title="二、概述"></a>二、概述</h2><p>　　AndroidManifest.xml是Android应用的入口文件，它描述了package中暴露的组件（activities, services, 等等），他们各自的实现类，各种能被处理的数据和启动位置。 除了能声明程序中的Activities, ContentProviders, Services和Intent Receivers，还能指定permissions和instrumentation（安全控制和测试）。 
+　　</p>
+<h2 id="三、结构"><a href="#三、结构" class="headerlink" title="三、结构"></a>三、结构</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xmlversion="1.0"encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">manifest</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-sdk</span>/&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-configuration</span>/&gt;</span> </span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-feature</span>/&gt;</span>  </span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">uses-permission</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">permission</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">permission-tree</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">permission-group</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">instrumentation</span>/&gt;</span> </span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">supports-screens</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">application</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">activity</span>&gt;</span> </span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">action</span>/&gt;</span> </span><br><span class="line">                <span class="tag">&lt;<span class="name">category</span>/&gt;</span> </span><br><span class="line">            <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">activity-alias</span>&gt;</span> </span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span><span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span> </span><br><span class="line">            <span class="tag">&lt;<span class="name">meta-data</span>/&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">activity-alias</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">service</span>&gt;</span> </span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span><span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span> </span><br><span class="line">            <span class="tag">&lt;<span class="name">meta-data</span>/&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">service</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">receiver</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span><span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span> </span><br><span class="line">            <span class="tag">&lt;<span class="name">meta-data</span>/&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">receiver</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">provider</span>&gt;</span> </span><br><span class="line">            <span class="tag">&lt;<span class="name">grant-uri-permission</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">meta-data</span>/&gt;</span> </span><br><span class="line">        <span class="tag">&lt;/<span class="name">provider</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">uses-library</span>/&gt;</span> </span><br><span class="line">    <span class="tag">&lt;/<span class="name">application</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="三、详解"><a href="#三、详解" class="headerlink" title="三、详解"></a>三、详解</h2><h3 id="1、Manifest"><a href="#1、Manifest" class="headerlink" title="1、Manifest"></a>1、Manifest</h3><p>详见: <a href="http://www.leoyanblog.com/post/2017/04/30.html">http://www.leoyanblog.com/post/2017/04/30.html</a></p>
+<h3 id="2、Application"><a href="#2、Application" class="headerlink" title="2、Application"></a>2、Application</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+<h3 id="3、Activity"><a href="#3、Activity" class="headerlink" title="3、Activity"></a>3、Activity</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+<h3 id="4、intent-filter"><a href="#4、intent-filter" class="headerlink" title="4、intent-filter"></a>4、intent-filter</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+<h3 id="5、meta-data"><a href="#5、meta-data" class="headerlink" title="5、meta-data"></a>5、meta-data</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+<h3 id="6、activity-alias"><a href="#6、activity-alias" class="headerlink" title="6、activity-alias"></a>6、activity-alias</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+<h3 id="7、Service"><a href="#7、Service" class="headerlink" title="7、Service"></a>7、Service</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+<h3 id="8、Receiver"><a href="#8、Receiver" class="headerlink" title="8、Receiver"></a>8、Receiver</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+<h3 id="9、Provider-属性"><a href="#9、Provider-属性" class="headerlink" title="9、Provider:属性"></a>9、Provider:属性</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+<h3 id="10、uses-library"><a href="#10、uses-library" class="headerlink" title="10、uses-library"></a>10、uses-library</h3><p>用户库，可自定义。所有android的包都可以引用</p>
+<h3 id="11、supports-screens"><a href="#11、supports-screens" class="headerlink" title="11、supports-screens"></a>11、supports-screens</h3><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;supports-screens  </span><br><span class="line">    android:smallScreens  = [<span class="string">"true"</span> <span class="string">| "</span>false<span class="string">"] </span></span><br><span class="line">    android:normalScreens = [<span class="string">"true"</span> <span class="string">| "</span>false<span class="string">"] </span></span><br><span class="line">    android:largeScreens  = [<span class="string">"true"</span> <span class="string">| "</span>false<span class="string">"] </span></span><br><span class="line">    android:anyDensity    = [<span class="string">"true"</span> <span class="string">| "</span>false<span class="string">"] /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这是在android1.6以后的新特性，支持多屏幕机制</p>
+<p>各属性含义：这四个属性，是否支持小屏，是否支持中屏，是否支持大屏，是否支持多种不同密度</p>
+<h3 id="12、uses-configuration-与uses-feature性能都差不多"><a href="#12、uses-configuration-与uses-feature性能都差不多" class="headerlink" title="12、uses-configuration 与uses-feature性能都差不多"></a>12、uses-configuration 与uses-feature性能都差不多</h3><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-configuration </span><br><span class="line">    android:<span class="attr">reqFiveWayNav</span>   = [<span class="string">"true"</span> | <span class="string">"false"</span>]</span><br><span class="line">    android:<span class="attr">reqHardKeyboard</span> = [<span class="string">"true"</span> | <span class="string">"false"</span>]</span><br><span class="line">    android:<span class="attr">reqKeyboardType</span> = [<span class="string">"undefined"</span> | <span class="string">"nokeys"</span> | <span class="string">"qwerty"</span> | <span class="string">"twelvekey"</span>]</span><br><span class="line">    android:<span class="attr">reqNavigation</span>   = [<span class="string">"undefined"</span> | <span class="string">"nonav"</span> | <span class="string">"dpad"</span> | <span class="string">"trackball"</span> | <span class="string">"wheel"</span>]</span><br><span class="line">    android:<span class="attr">reqTouchScreen</span>  = [<span class="string">"undefined"</span> | <span class="string">"notouch"</span> | <span class="string">"stylus"</span> | <span class="string">"finger"</span>] /&gt;</span><br><span class="line"></span><br><span class="line">&lt;uses-feature</span><br><span class="line">    android:<span class="attr">glEsVersion</span> = <span class="string">"integer"</span></span><br><span class="line">    android:<span class="attr">name</span> = <span class="string">"string"</span></span><br><span class="line">    android:<span class="attr">required</span> = [<span class="string">"true"</span> | <span class="string">"false"</span>] /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这两者都是在描述应用所需要的硬件和软件特性，以便防止应用在没有这些特性的设备上安装。</p>
+<h3 id="13、uses-sdk"><a href="#13、uses-sdk" class="headerlink" title="13、uses-sdk"></a>13、uses-sdk</h3><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-sdk</span><br><span class="line">    android:<span class="attr">minSdkVersion</span>    = <span class="string">"integer"</span></span><br><span class="line">    android:<span class="attr">targetSdkVersion</span> = <span class="string">"integer"</span></span><br><span class="line">    android:<span class="attr">maxSdkVersion</span>    = <span class="string">"integer"</span>/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>描述应用所需的api level，就是版本，目前是android 2.2 = 8，android2.1 = 7，android1.6 = 4，android1.5=3</p>
+<p>在此属性中可以指定支持的最小版本，目标版本以及最大版本</p>
+<h3 id="14、instrumentation"><a href="#14、instrumentation" class="headerlink" title="14、instrumentation"></a>14、instrumentation</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;instrumentation</span><br><span class="line">    android:functionalTest  = [<span class="string">"true"</span> | <span class="string">"false"</span>]</span><br><span class="line">    android:handleProfiling = [<span class="string">"true"</span> | <span class="string">"false"</span>]</span><br><span class="line">    android:<span class="attribute">icon</span>=<span class="string">"drawable resource"</span></span><br><span class="line">    android:<span class="attribute">label</span>=<span class="string">"string resource"</span></span><br><span class="line">    android:<span class="attribute">name</span>=<span class="string">"string"</span></span><br><span class="line">    android:<span class="attribute">targetPackage</span>=<span class="string">"string"</span>/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>定义一些用于探测和分析应用性能等等相关的类，可以监控程序。在各个应用程序的组件之前instrumentation类被实例化</p>
+<p>android:functionalTest(解释：instrumentation类是否能运行一个功能测试，默认为false)</p>
+<h3 id="15、permission、uses-permission、permission-tree-、permission-group-区别"><a href="#15、permission、uses-permission、permission-tree-、permission-group-区别" class="headerlink" title="15、permission、uses-permission、permission-tree 、permission-group 区别"></a>15、permission、uses-permission、permission-tree 、permission-group 区别</h3><blockquote>
+<p>待补充</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android/" rel="tag"># Android</a>
+              <a href="/tags/%E6%B8%85%E5%8D%95%E6%96%87%E4%BB%B6/" rel="tag"># 清单文件</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/post/2017/04/16.html" rel="prev" title="Android SDK版本号 与 API Level 对应关系">
+      <i class="fa fa-chevron-left"></i> Android SDK版本号 与 API Level 对应关系
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/post/2017/04/30.html" rel="next" title="Android 清单文件之 Manifest 标签详解">
+      Android 清单文件之 Manifest 标签详解 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、前言"><span class="nav-number">1.</span> <span class="nav-text">一、前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、概述"><span class="nav-number">2.</span> <span class="nav-text">二、概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、结构"><span class="nav-number">3.</span> <span class="nav-text">三、结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、详解"><span class="nav-number">4.</span> <span class="nav-text">三、详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、Manifest"><span class="nav-number">4.1.</span> <span class="nav-text">1、Manifest</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、Application"><span class="nav-number">4.2.</span> <span class="nav-text">2、Application</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、Activity"><span class="nav-number">4.3.</span> <span class="nav-text">3、Activity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、intent-filter"><span class="nav-number">4.4.</span> <span class="nav-text">4、intent-filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、meta-data"><span class="nav-number">4.5.</span> <span class="nav-text">5、meta-data</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6、activity-alias"><span class="nav-number">4.6.</span> <span class="nav-text">6、activity-alias</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7、Service"><span class="nav-number">4.7.</span> <span class="nav-text">7、Service</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8、Receiver"><span class="nav-number">4.8.</span> <span class="nav-text">8、Receiver</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9、Provider-属性"><span class="nav-number">4.9.</span> <span class="nav-text">9、Provider:属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10、uses-library"><span class="nav-number">4.10.</span> <span class="nav-text">10、uses-library</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11、supports-screens"><span class="nav-number">4.11.</span> <span class="nav-text">11、supports-screens</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12、uses-configuration-与uses-feature性能都差不多"><span class="nav-number">4.12.</span> <span class="nav-text">12、uses-configuration 与uses-feature性能都差不多</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13、uses-sdk"><span class="nav-number">4.13.</span> <span class="nav-text">13、uses-sdk</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14、instrumentation"><span class="nav-number">4.14.</span> <span class="nav-text">14、instrumentation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15、permission、uses-permission、permission-tree-、permission-group-区别"><span class="nav-number">4.15.</span> <span class="nav-text">15、permission、uses-permission、permission-tree 、permission-group 区别</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Leo Yan</p>
+  <div class="site-description" itemprop="description">离经不叛道，特立不独行。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo Yan</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.leoyanblog.com","root":"/","scheme":"Muse","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="转载请注明出处：www.leoyanblog.com 本文出自 LeoYan 的博客 本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。  Activity的任务和启动模式任务与返回栈后进先出原则 &amp;#8195;&amp;#8195;Task 就好像是能包含很多 Activity 的栈。默认情况下，一个 Activity 启动另外一个 Activity 时，两个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 之 Activity (三) Task 和 LaunchMode">
+<meta property="og:url" content="http://www.leoyanblog.com/post/2017/02/19.html">
+<meta property="og:site_name" content="LeoYan Blog">
+<meta property="og:description" content="转载请注明出处：www.leoyanblog.com 本文出自 LeoYan 的博客 本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。  Activity的任务和启动模式任务与返回栈后进先出原则 &amp;#8195;&amp;#8195;Task 就好像是能包含很多 Activity 的栈。默认情况下，一个 Activity 启动另外一个 Activity 时，两个">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://oddu03if7.bkt.clouddn.com/diagram_backstack.png">
+<meta property="og:image" content="http://oddu03if7.bkt.clouddn.com/diagram_multitasking.png">
+<meta property="og:image" content="http://oddu03if7.bkt.clouddn.com/diagram_multiple_instances.png">
+<meta property="article:published_time" content="2017-02-19T02:00:00.000Z">
+<meta property="article:modified_time" content="2017-03-27T03:50:42.158Z">
+<meta property="article:author" content="Leo Yan">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="Activity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://oddu03if7.bkt.clouddn.com/diagram_backstack.png">
+
+<link rel="canonical" href="http://www.leoyanblog.com/post/2017/02/19.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Android 之 Activity (三) Task 和 LaunchMode | LeoYan Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">LeoYan Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术分享，生活记录。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2017/02/19.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Leo Yan">
+      <meta itemprop="description" content="离经不叛道，特立不独行。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeoYan Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android 之 Activity (三) Task 和 LaunchMode
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-02-19 10:00:00" itemprop="dateCreated datePublished" datetime="2017-02-19T10:00:00+08:00">2017-02-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-03-27 11:50:42" itemprop="dateModified" datetime="2017-03-27T11:50:42+08:00">2017-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">四大组件</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6/Activity/" itemprop="url" rel="index"><span itemprop="name">Activity</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>转载请注明出处：<a href="http://www.leoyanblog.com">www.leoyanblog.com</a></p>
+<p>本文出自 LeoYan 的博客</p>
+<p>本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。</p>
+</blockquote>
+<h2 id="Activity的任务和启动模式"><a href="#Activity的任务和启动模式" class="headerlink" title="Activity的任务和启动模式"></a>Activity的任务和启动模式</h2><h3 id="任务与返回栈"><a href="#任务与返回栈" class="headerlink" title="任务与返回栈"></a>任务与返回栈</h3><h4 id="后进先出原则"><a href="#后进先出原则" class="headerlink" title="后进先出原则"></a>后进先出原则</h4><p><img src="http://oddu03if7.bkt.clouddn.com/diagram_backstack.png" alt="后进先出"></p>
+<p>&#8195;&#8195;Task 就好像是能包含很多 Activity 的栈。默认情况下，一个 Activity 启动另外一个 Activity 时，两个 Activity 是放在同一个 Task 栈中的，第二个 Activity 压入第一个 Activity 所在的 Task 栈。当用户按“返回”按钮时，第二  Activity 从栈中弹出，第一个 Activity 恢复执行。直到用户返回主屏幕为止（或者，返回 Task 中正在运行的任意 Activity）。当所有 Activity 均从堆栈中移除后，Task 即不复存在。</p>
+<h4 id="多任务"><a href="#多任务" class="headerlink" title="多任务"></a>多任务</h4><p><img src="http://oddu03if7.bkt.clouddn.com/diagram_multitasking.png" alt="多任务"></p>
+<p>&#8195;&#8195;Task 是一个有机整体，当用户开始新 Task 或通过“主页”按钮转到主屏幕时，可以移动到“后台”。 尽管在后台时，该任务中的所有 Activity 全部停止，但是 Task 的返回栈仍旧不变，也就是说，当另一个 Task 发生时，该 Task 仅仅失去焦点而已，如上图中所示。然后， Task 可以返回到“前台”，用户就能够回到离开时的状态。</p>
+<blockquote>
+<p>注：后台可以同时运行多个 Task 。但是，如果用户同时运行多个后台 Task ，则系统可能会开始销毁后台 Activity，以回收内存资源，从而导致 Activity 状态丢失。</p>
+</blockquote>
+<h4 id="可多次实例化"><a href="#可多次实例化" class="headerlink" title="可多次实例化"></a>可多次实例化</h4><p><img src="http://oddu03if7.bkt.clouddn.com/diagram_multiple_instances.png" alt="多次实例化"></p>
+<p>&#8195;&#8195;应用中的一个 Activity 可能会多次实例化，如上图所示。因此，如果用户使用“返回”按钮向后导航，则会按 Activity 每个实例的打开顺序显示这些实例（每个实例的 UI 状态各不相同）。</p>
+<h4 id="任务的默认行为总结"><a href="#任务的默认行为总结" class="headerlink" title="任务的默认行为总结"></a>任务的默认行为总结</h4><ul>
+<li>当 Activity A 启动 Activity B 时，Activity A 将会停止，但系统会保留其状态（例如，滚动位置和已输入表单中的文本）。如果用户在处于 Activity B 时按“返回”按钮，则 Activity A 将恢复其状态，继续执行。</li>
+<li>用户通过按“主页”按钮离开任务时，当前 Activity 将停止且其任务会进入后台。 系统将保留任务中每个 Activity 的状态。如果用户稍后通过选择开始任务的启动器图标来恢复任务，则任务将出现在前台并恢复执行堆栈顶部的 Activity。</li>
+<li>如果用户按“返回”按钮，则当前 Activity 会从堆栈弹出并被销毁。 堆栈中的前一个 Activity 恢复执行。销毁 Activity 时，系统不会保留该 Activity 的状态。</li>
+<li>即使来自其他任务，Activity 也可以多次实例化。</li>
+</ul>
+<h3 id="LaunchMode简介"><a href="#LaunchMode简介" class="headerlink" title="LaunchMode简介"></a>LaunchMode简介</h3><p>&#8195;&#8195;LaunchMode 是 Activity 类的一个属性，该属性包括4个具体值：standard、singleTop、singleTask、singleInstance。我们都知道，Android 系统中启动 Activity 是通过 Intent 实例进行的，当系统收到一个 Intent 的实例需要去启动指定的 Activity 的时候，Android 系统会根据目标 Activity 的该属性值来决定是要要创建新的该 Activity 实例以及如何在 Task 中创建该 Activity 的实例。这就是 LaunchMode 这个属性的作用。</p>
+<h4 id="LaunchMode-分为两个类别"><a href="#LaunchMode-分为两个类别" class="headerlink" title="LaunchMode 分为两个类别"></a>LaunchMode 分为两个类别</h4><ul>
+<li>普通类型</li>
+</ul>
+<p>&#8195;&#8195;用户常用的启动模式类型，大部分 Activity都是这两种启动模式。包括 standard 和 singleTop 两种启动模式</p>
+<ul>
+<li>特殊类型</li>
+</ul>
+<p>&#8195;&#8195;具有特殊的行为的启动模式，只针对特殊需求的使用。包括 singleTask 和 singleInstance 两种启动模式</p>
+<p>官方文档对4中启动模式描述如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">使用场景</th>
+<th align="center">启动模式</th>
+<th align="center">是否可以有多个实例？</th>
+<th align="center">简介</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">普通类型</td>
+<td align="center">standard</td>
+<td align="center">是</td>
+<td align="center">系统默认的启动模式，当系统接收到一个 Intent 实例去启动一个 standard 模式的 Activity 时，系统总是会在目标栈的顶部创建一个新的 Activity 实例，并把 Intent 的实例传进去。</td>
+</tr>
+<tr>
+<td align="center">普通类型</td>
+<td align="center">singleTop</td>
+<td align="center">视具体情况</td>
+<td align="center">当系统接收到一个 Intent 实例去启动一个 singleTop 模式的 Activity 时，如果在目标栈的顶部存在一个该 Activity 的实例的话，那么系统就会重用这个 Activity 的实例而不创建新的实例，并回调该 Activity 的 onNewIntent(Intent intent) 方法把新的 Intent 实例当作方法参数传递进去；如果在目标栈的顶部没有该 Activity 的实例的话系统将会在新建一个 Activity 实例，与 standard 的行为就一样了。</td>
+</tr>
+<tr>
+<td align="center">特殊类型</td>
+<td align="center">singleTask</td>
+<td align="center">否</td>
+<td align="center">当系统接收到一个 Intent 实例去启动一个 singleTask 模式的 Activity 时，如果不存在该 Activity 的实例的话，系统会先创建一个新的 Task，并在该 Task 底部里面创建一个该 Activity 的实例，随后把 Intent 实例传递进去；如果已经存在一个该 Activity 的实例的话，系统就不会再创建新的实例，那么系统就会重用这个 Activity 的实例而不创建新的实例，并回调该 Activity 的 onNewIntent(Intent intent) 方法把新的 Intent 实例当作方法参数传递进去，同时，该 Activity 实例所在的 Task 将会被调到前台。</td>
+</tr>
+<tr>
+<td align="center">特殊类型</td>
+<td align="center">singleInstance</td>
+<td align="center">否</td>
+<td align="center">类似于 singleTask ，唯一不同的地方在于，singleInstance 的 Activity 不允许自己的 Task 中存在其他的 Activity 实例，也就是说 singleInstance 的 Activity 永远是 Task 中唯一的一个 Activity 实例。</td>
+</tr>
+</tbody></table>
+<h4 id="LaunchMode-的定义"><a href="#LaunchMode-的定义" class="headerlink" title="LaunchMode 的定义"></a>LaunchMode 的定义</h4><ul>
+<li>静态定义：在目标 Activity 的 mainfest 中使用标签静态定义</li>
+<li>动态定义：在启动目标 Activity 的 Intent 对象中使用不同的 flag 定义，可以用来定义 LaunchMode 的 flag 有以下三个：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">flag</th>
+<th align="center">对应的 LaunchMode</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">FLAG_ACTIVITY_NEW_TASK</td>
+<td align="center">singleTask</td>
+</tr>
+<tr>
+<td align="center">FLAG_ACTIVITY_SINGLE_TOP</td>
+<td align="center">singleTop</td>
+</tr>
+<tr>
+<td align="center">FLAG_ACTIVITY_CLEAR_TOP</td>
+<td align="center">无对应的LaunchMode</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>注：在Activity A启动 Activity B的时候，假如B已经在 mainfest 文件中定义过 LaunchMode，此时的 Intent 对象中也有定义 LaunchMode，这时候以 Activity A start B 的时候以 Intent 中定义的为准。</p>
+</blockquote>
+<h4 id="典型使用场景"><a href="#典型使用场景" class="headerlink" title="典型使用场景"></a>典型使用场景</h4><table>
+<thead>
+<tr>
+<th align="center">LaunchMode</th>
+<th align="center">使用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">standard</td>
+<td align="center">绝大多数标准的跳转</td>
+</tr>
+<tr>
+<td align="center">singleTop</td>
+<td align="center">新闻阅读类的内容页面，假如在一个新闻页面又打开了另一个新闻页面，这时候Task的顶端已经有该Activity的实例了，就不用再初始化了</td>
+</tr>
+<tr>
+<td align="center">singleTask</td>
+<td align="center">通知栏启动其他app，一般都会在Intent中加上FLAG_ACTIVITY_NEW_TASK，相当于使用了singleTask</td>
+</tr>
+</tbody></table>
+<h4 id="一些会影响-Task-行为的-mainfest-中-Activity-的属性"><a href="#一些会影响-Task-行为的-mainfest-中-Activity-的属性" class="headerlink" title="一些会影响 Task 行为的 mainfest 中 Activity 的属性"></a>一些会影响 Task 行为的 mainfest 中 Activity 的属性</h4><table>
+<thead>
+<tr>
+<th align="center">属性名称</th>
+<th align="center">可取值</th>
+<th align="center">意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">android:taskAffinity</td>
+<td align="center">一个存在的包名</td>
+<td align="center">表示该 Activity 与该包名具有亲缘，在该 Activity 启动的时候，会优先选择被添加进已经存在的具有亲缘关系的 Task 中。</td>
+</tr>
+<tr>
+<td align="center">android:allowTaskReparenting</td>
+<td align="center">true, false</td>
+<td align="center">如果一个 Activity 的该属性值是 true，它先被一个外部 app 启动了，此时它存在于那个调用它的 app 的 Task 中，当与它有亲缘关系的 Task 被后台带回到前台的时候，系统会把它换到该 Task 中；如果值为 false 的话，就不会发生移动。</td>
+</tr>
+<tr>
+<td align="center">android:alwaysRetainTaskState</td>
+<td align="center">true, false</td>
+<td align="center">正常情况下，当一个 Task 在后台待了很久之后，系统会把该 Task 的非根 Activity都清除，只保留根 Activity。但是假如根 Activity 的该属性值被设置为 true 的话，系统会保留该 Task 中所有的 Activity。</td>
+</tr>
+</tbody></table>
+<h4 id="LaunchMode-总结"><a href="#LaunchMode-总结" class="headerlink" title="LaunchMode 总结"></a>LaunchMode 总结</h4><ul>
+<li><p>LaunchMode 的作用，是让开发者可以在一定程度上决定自己的 Activity 该如何被系统实例化，从而来满足开发者的开发需求。</p>
+</li>
+<li><p>LaunchMode 一共分为两类，一类是普通开发者最常用的：standard 和 singleTop，其中 standard 是官方定义的最常见的也是默认的系统对 Activity 进行实例化的行为模式，singleTop 在 standard 的基础上进行了点小的改动，当目标栈的顶部有 Activity 的实例的时候将不再对该 Activity 进行初始化而是直接使用现成的 Activity 实例，因为有很多的使用场景是 standard 不太合适而 singleTop 比较合适的；另一个类别的是普通开发者不常使用的，singleTask 和 singleInstance，官方并不推荐在通常的场景中使用该类的 LaunchMode，只有在极少数特殊的情形中才去使用，该类 LaunchMode 的特点是 Activity 在系统中只会有一个实例存在，不同的地方在于 singleInstance 的 Activity 会独占一个 Task，而 singleTask 的则不会。</p>
+</li>
+<li><p>LaunchMode 可以在 mainfest 文件中静态地设置，同时，在代码中，通过 Intent 的几个 flag 也可以达到设置 LaunchMode 的目的。假如某一次启动一个 Activity 的时候，在 Intent 中指定了一个 LaunchMode，而且该 Activity 本身已经在 mainfest 文件中设置了 LaunchMode，那么这个时候系统会 以Intent 中指定的为准。Android 系统这样设计的目的，我想是为了让整个系统的 Activity 可以更方便地让其它 Activity（可以不再一个app内）进行调用，这与 Android 的开放的态度是一致的。</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android/" rel="tag"># Android</a>
+              <a href="/tags/Activity/" rel="tag"># Activity</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/post/2017/02/12.html" rel="prev" title="Android 之 Activity (二) 生命周期">
+      <i class="fa fa-chevron-left"></i> Android 之 Activity (二) 生命周期
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/post/2017/02/26.html" rel="next" title="Android 之 Service 相关知识">
+      Android 之 Service 相关知识 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Activity的任务和启动模式"><span class="nav-number">1.</span> <span class="nav-text">Activity的任务和启动模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#任务与返回栈"><span class="nav-number">1.1.</span> <span class="nav-text">任务与返回栈</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#后进先出原则"><span class="nav-number">1.1.1.</span> <span class="nav-text">后进先出原则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多任务"><span class="nav-number">1.1.2.</span> <span class="nav-text">多任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可多次实例化"><span class="nav-number">1.1.3.</span> <span class="nav-text">可多次实例化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#任务的默认行为总结"><span class="nav-number">1.1.4.</span> <span class="nav-text">任务的默认行为总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LaunchMode简介"><span class="nav-number">1.2.</span> <span class="nav-text">LaunchMode简介</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LaunchMode-分为两个类别"><span class="nav-number">1.2.1.</span> <span class="nav-text">LaunchMode 分为两个类别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LaunchMode-的定义"><span class="nav-number">1.2.2.</span> <span class="nav-text">LaunchMode 的定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#典型使用场景"><span class="nav-number">1.2.3.</span> <span class="nav-text">典型使用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一些会影响-Task-行为的-mainfest-中-Activity-的属性"><span class="nav-number">1.2.4.</span> <span class="nav-text">一些会影响 Task 行为的 mainfest 中 Activity 的属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LaunchMode-总结"><span class="nav-number">1.2.5.</span> <span class="nav-text">LaunchMode 总结</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Leo Yan</p>
+  <div class="site-description" itemprop="description">离经不叛道，特立不独行。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo Yan</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

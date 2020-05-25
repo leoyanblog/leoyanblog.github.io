@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.leoyanblog.com","root":"/","scheme":"Muse","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="转载请注明出处：www.leoyanblog.com 本文出自 LeoYan 的博客 本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。  Manifest:属性12345678&lt;manifest xmlns:android&#x3D;&quot;http:&#x2F;&#x2F;schemas.android.com&#x2F;apk&#x2F;res&#x2F;android&quot;    package&#x3D;&quot;com.le">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 清单文件之 Manifest 标签详解">
+<meta property="og:url" content="http://www.leoyanblog.com/post/2017/04/30.html">
+<meta property="og:site_name" content="LeoYan Blog">
+<meta property="og:description" content="转载请注明出处：www.leoyanblog.com 本文出自 LeoYan 的博客 本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。  Manifest:属性12345678&lt;manifest xmlns:android&#x3D;&quot;http:&#x2F;&#x2F;schemas.android.com&#x2F;apk&#x2F;res&#x2F;android&quot;    package&#x3D;&quot;com.le">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-04-30T02:00:00.000Z">
+<meta property="article:modified_time" content="2017-07-03T09:59:22.681Z">
+<meta property="article:author" content="Leo Yan">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="清单文件">
+<meta property="article:tag" content="Manifest">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://www.leoyanblog.com/post/2017/04/30.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Android 清单文件之 Manifest 标签详解 | LeoYan Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">LeoYan Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">技术分享，生活记录。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.leoyanblog.com/post/2017/04/30.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Leo Yan">
+      <meta itemprop="description" content="离经不叛道，特立不独行。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LeoYan Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android 清单文件之 Manifest 标签详解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-04-30 10:00:00" itemprop="dateCreated datePublished" datetime="2017-04-30T10:00:00+08:00">2017-04-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2017-07-03 17:59:22" itemprop="dateModified" datetime="2017-07-03T17:59:22+08:00">2017-07-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/%E6%B8%85%E5%8D%95%E6%96%87%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">清单文件</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>转载请注明出处：<a href="http://www.leoyanblog.com">www.leoyanblog.com</a></p>
+<p>本文出自 LeoYan 的博客</p>
+<p>本文同步发表于我的微信公众号，扫一扫文章底部的二维码或在微信搜索 LeoYan 即可关注。</p>
+</blockquote>
+<h2 id="Manifest-属性"><a href="#Manifest-属性" class="headerlink" title="Manifest:属性"></a>Manifest:属性</h2><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;manifest xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    package=<span class="string">"com.leoyanblog.app"</span></span><br><span class="line">    android:sharedUserId=<span class="string">"string"</span></span><br><span class="line">    android:sharedUserLabel=<span class="string">"string resource"</span></span><br><span class="line">    android:versionCode=<span class="string">"integer"</span></span><br><span class="line">    android:versionName=<span class="string">"string"</span></span><br><span class="line">    android:installLocation=[<span class="string">"auto"</span> <span class="string">| "</span>internalOnly<span class="string">" | "</span>preferExternal<span class="string">"]&gt;</span></span><br><span class="line">&lt;/manifest&gt;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="1、xmlns-android"><a href="#1、xmlns-android" class="headerlink" title="1、xmlns:android"></a>1、xmlns:android</h3><p>定义android命名空间，一般为<a href="http://schemas.android.com/apk/res/android，这样使得Android中各种标准属性能在文件中使用，提供了大部分元素中的数据。" target="_blank" rel="noopener">http://schemas.android.com/apk/res/android，这样使得Android中各种标准属性能在文件中使用，提供了大部分元素中的数据。</a></p>
+<h3 id="2、package"><a href="#2、package" class="headerlink" title="2、package"></a>2、package</h3><p>指定本应用内Java主程序包的包名，它也是一个应用进程的默认名称</p>
+<h3 id="3、sharedUserId"><a href="#3、sharedUserId" class="headerlink" title="3、sharedUserId"></a>3、sharedUserId</h3><p>当APK安装的时候，userId这个标志就会产生。APK在设备上的整个生命周期中，这个ID不再改变。同一个应用包在不同设备上可能有不同的userId，重要的是在给定的设备上，每个应用包有自己独立的userId。</p>
+<p>userId的特点：</p>
+<p>1.） 作为APK身份的标识</p>
+<p>2.） userId对应一个Linux用户，所以不同APK(用户)间互相访问数据默认是禁止的。</p>
+<p>若要共享数据，第一可以采用Share Preference / Content Provider，第二种就可以采用sharedUserId了，将不同APK的sharedUserId都设为一样，则这些APK之间就可以互相共享数据了。详见：<a href="http://www.leoyanblog.com/post/2017/05/07.html">http://www.leoyanblog.com/post/2017/05/07.html</a></p>
+<h3 id="4、sharedUserLabel"><a href="#4、sharedUserLabel" class="headerlink" title="4、sharedUserLabel"></a>4、sharedUserLabel</h3><p>这个属性给共享的 UserId 定义了一个用户可读的标签。这个标签必须用字符串资源来设置，不能使用原生的字符串。</p>
+<p>这个属性在API Level 3中被引入，只有在sharedUserId属性被设置，这个属性才有意义。</p>
+<h3 id="5、versionCode"><a href="#5、versionCode" class="headerlink" title="5、versionCode"></a>5、versionCode</h3><p>是给设备程序识别版本(升级)用的，必须是一个interger值，代表app更新过多少次，比如第一版一般为1，之后若要更新版本就设置为2，3等等。。。</p>
+<h3 id="6、versionName"><a href="#6、versionName" class="headerlink" title="6、versionName"></a>6、versionName</h3><p>这个名称是给用户看的，你可以将你的APP版本号设置为1.1版，后续更新版本设置为1.2、2.0版本等等。。。</p>
+<h3 id="7、installLocation"><a href="#7、installLocation" class="headerlink" title="7、installLocation"></a>7、installLocation</h3><p>安装参数，是Android2.2中的一个新特性，installLocation有三个值可以选择：internalOnly、auto、preferExternal</p>
+<p>选择preferExternal，系统会优先考虑将APK安装到SD卡上（当然最终用户可以选择为内部ROM存储上，如果SD存储已满，也会安装到内部存储上）</p>
+<p>选择auto，系统将会根据存储空间自己去适应</p>
+<p>选择internalOnly，是指必须安装到内部才能运行</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android/" rel="tag"># Android</a>
+              <a href="/tags/%E6%B8%85%E5%8D%95%E6%96%87%E4%BB%B6/" rel="tag"># 清单文件</a>
+              <a href="/tags/Manifest/" rel="tag"># Manifest</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/post/2017/04/23.html" rel="prev" title="Android 清单文件AndroidManifest.xml最全详解">
+      <i class="fa fa-chevron-left"></i> Android 清单文件AndroidManifest.xml最全详解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/post/2017/05/07.html" rel="next" title="Android 如何用 sharedUserId 做数据共享">
+      Android 如何用 sharedUserId 做数据共享 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Manifest-属性"><span class="nav-number">1.</span> <span class="nav-text">Manifest:属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、xmlns-android"><span class="nav-number">1.1.</span> <span class="nav-text">1、xmlns:android</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、package"><span class="nav-number">1.2.</span> <span class="nav-text">2、package</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、sharedUserId"><span class="nav-number">1.3.</span> <span class="nav-text">3、sharedUserId</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、sharedUserLabel"><span class="nav-number">1.4.</span> <span class="nav-text">4、sharedUserLabel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、versionCode"><span class="nav-number">1.5.</span> <span class="nav-text">5、versionCode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6、versionName"><span class="nav-number">1.6.</span> <span class="nav-text">6、versionName</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7、installLocation"><span class="nav-number">1.7.</span> <span class="nav-text">7、installLocation</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Leo Yan</p>
+  <div class="site-description" itemprop="description">离经不叛道，特立不独行。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo Yan</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
